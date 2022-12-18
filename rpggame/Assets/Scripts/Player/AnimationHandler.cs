@@ -7,7 +7,8 @@ public class AnimationHandler : MonoBehaviour
 {
     public Animator animator;
     public InputHandler inputHandler;
-    public PlayerController playerController;
+    public PlayerMovement playerController;
+    public PlayerManager playerManager;
     private int vertical;
     private int horizontal;
     public bool canRotate;
@@ -16,7 +17,9 @@ public class AnimationHandler : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         inputHandler = GetComponentInParent<InputHandler>();
-        playerController = GetComponentInParent<PlayerController>();
+        playerController = GetComponentInParent<PlayerMovement>();
+        playerManager = GetComponentInParent<PlayerManager>();
+        
         vertical = Animator.StringToHash("Vertical");
         horizontal = Animator.StringToHash("Horizontal");
     }
@@ -95,7 +98,7 @@ public class AnimationHandler : MonoBehaviour
 
     private void OnAnimatorMove()
     {
-        if(inputHandler.isInteracting == false) return;
+        if(playerManager.isInteracting == false) return;
         
         float delta = Time.deltaTime;
         playerController.rigidbody.drag = 0;

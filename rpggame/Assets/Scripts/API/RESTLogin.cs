@@ -29,9 +29,15 @@ public class RESTLogin : MonoBehaviour
     {
         var request = UnityWebRequest.Get("http://localhost:8080/users/" + login + "/" + password);
         yield return request.SendWebRequest();
-        
+
+        if (request.downloadHandler.text.Contains("null"))
+        {
+            SceneNavigator.openErrorPanel(errorPanel, activeUI, "Такого аккаунта не существует!");
+            yield break;
+        }
+
         User user = JsonUtility.FromJson<User>(request.downloadHandler.text);
-        
+
         PlayerCharacter.user = user;
         PlayerCharacter.user.password = password;
     }

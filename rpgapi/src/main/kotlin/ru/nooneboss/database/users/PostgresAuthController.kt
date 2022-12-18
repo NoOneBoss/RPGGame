@@ -1,7 +1,7 @@
 package ru.nooneboss.database.users
 
 import java.sql.DriverManager
-import java.util.UUID
+import java.util.*
 
 object PostgresAuthController {
     private val jdbc = "jdbc:postgresql://localhost:5432/rpgtrader"
@@ -14,7 +14,7 @@ object PostgresAuthController {
     }
 
     fun login(login: String, password: String): Boolean {
-        val statement = connection.prepareStatement("select play.auth(?, ?)")
+        val statement = connection.prepareStatement("select  rpgtrader.play.auth(?, ?)")
 
         statement.setString(1, login)
         statement.setString(2, password)
@@ -26,16 +26,16 @@ object PostgresAuthController {
     }
 
     fun register(login: String, password: String){
-        val statement = connection.prepareStatement("select play.register(?, ?)")
+        val statement = connection.prepareStatement("call rpgtrader.play.register(?, ?)")
 
         statement.setString(1, login)
         statement.setString(2, password)
 
-        statement.executeQuery()
+        statement.execute()
     }
 
     fun alreadyExists(login: String): Boolean{
-        val statement = connection.prepareStatement("select play.account_already_exist(?)")
+        val statement = connection.prepareStatement("select rpgtrader.play.account_already_exist(?)")
 
         statement.setString(1, login)
 
@@ -46,8 +46,25 @@ object PostgresAuthController {
     }
 
     fun getUser(userLogin: String): User? {
-        val statement = connection.prepareStatement("select * from play.users where login = ?")
+        val statement = connection.prepareStatement("select * from rpgtrader.play.users where login = ?")
         statement.setString(1, userLogin)
+        val result = statement.executeQuery()
+        return if(result.next()) {
+            User(
+                UUID.fromString(result.getString("user_uuid")),
+                result.getString("login"),
+                result.getString("password"),
+                result.getString("role"))
+            } else {
+                null
+            }
+    }
+
+    fun getUser(uuid: UUID) : User? {
+        if(PlayerSession.sessions.any { it.user_uuid == uuid }) return PlayerSession.sessions.first { it.user_uuid == uuid }
+
+        val statement = connection.prepareStatement("select * from rpgtrader.play.users where user_uuid = ?")
+        statement.setObject(1, uuid)
         val result = statement.executeQuery()
         return if(result.next()) {
             User(

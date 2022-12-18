@@ -7,13 +7,15 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import ru.nooneboss.database.logs.LogMessage
+import ru.nooneboss.database.logs.PostgresLogsController
 import ru.nooneboss.database.users.PlayerSession
 import ru.nooneboss.database.users.PostgresAuthController
 import ru.nooneboss.database.users.User
-import java.util.*
 
 fun Application.configureSecurity() {
     install(Authentication){
@@ -39,9 +41,20 @@ fun Application.configureSecurity() {
                 call.respondText(token)
 
                 PlayerSession.join(user)
-                println("[LOG] User ${user.login} joined")
+                PostgresLogsController.log(
+                    LogMessage(user.user_uuid,
+                        null, "Authenticate", call.request.origin.remoteHost, true)
+                )
+                println("[LOG] User ${user.user_uuid} joined")
             }
-            else call.respondText("Login failed, incorrect login or password", status = HttpStatusCode.Unauthorized)
+            else {
+                call.respondText("Login failed, incorrect login or password", status = HttpStatusCode.Unauthorized)
+                println("[LOG] User ${user.user_uuid} failed to login!")
+                PostgresLogsController.log(
+                    LogMessage(user.user_uuid,
+                        null, "Failed login", call.request.origin.remoteHost, true)
+                )
+            }
         }
 
         post("/register"){
@@ -50,20 +63,13 @@ fun Application.configureSecurity() {
                 PostgresAuthController.register(user.login, user.password)
 
                 println("[LOG] User ${user.login} registered")
+                PostgresLogsController.log(
+                    LogMessage(PostgresAuthController.getUser(user.login)!!.user_uuid,
+                        null, "Registered", call.request.origin.remoteHost, false)
+                )
                 call.respondText ("Successfully registration!", status = HttpStatusCode.OK)
             }
             else call.respondText("Registration failed, user with this login already exists", status = HttpStatusCode.Unauthorized)
-        }
-
-        authenticate {
-            get("/api") {
-                val user = call.principal<User>()
-                if(user != null) {
-                    call.respondText("Successful login, ${user.login}")
-                } else {
-                    call.respondText("Login failed", status = HttpStatusCode.Unauthorized)
-                }
-            }
         }
     }
 
@@ -71,24 +77,17 @@ fun Application.configureSecurity() {
 
 private object JWTConfig{
     val secret = "rpgtraderapiASFDKF13RKSDKF00$21MSDKASDFR$"
-    val issuer = "http://localhost:8080"
-    val audience = "http://localhost:8080/api"
     val realm = "Access to the /api path"
 
     fun generateToken(user: User): String {
         return JWT.create()
-            .withIssuer(issuer)
-            .withAudience(audience)
             .withClaim("login", user.login)
             .withClaim("password", user.password)
-            .withExpiresAt(Date(System.currentTimeMillis() + 3600000))
             .sign(Algorithm.HMAC256(secret))
     }
 
     fun verifyToken() : JWTVerifier{
         return JWT.require(Algorithm.HMAC256(secret))
-            .withIssuer(issuer)
-            .withAudience(audience)
             .build()
     }
 }
