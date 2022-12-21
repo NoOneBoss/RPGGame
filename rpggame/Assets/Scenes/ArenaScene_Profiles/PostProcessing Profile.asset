@@ -18,7 +18,7 @@ MonoBehaviour:
     value: 1
   shutterAngle:
     overrideState: 1
-    value: 336
+    value: 328
   sampleCount:
     overrideState: 1
     value: 32
@@ -84,13 +84,13 @@ MonoBehaviour:
     value: 1
   focusDistance:
     overrideState: 1
-    value: 20
+    value: 0.93
   aperture:
     overrideState: 1
-    value: 5.2
+    value: 12.3
   focalLength:
     overrideState: 1
-    value: 157
+    value: 44
   kernelSize:
     overrideState: 1
     value: 3

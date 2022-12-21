@@ -40,6 +40,8 @@ public class CameraHandler : MonoBehaviour
         defaultPosition = cameraTransform.localPosition.z;
         ignoreLayers = ~(1 << 8 | 1 << 9 | 1 << 10);
         
+        targetTransform = FindObjectOfType<PlayerManager>().transform;
+        
         Application.targetFrameRate = 60;
     }
     

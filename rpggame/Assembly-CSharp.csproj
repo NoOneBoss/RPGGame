@@ -41,10 +41,12 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Player\AnimationHandler.cs" />
+     <Compile Include="Assets\Scripts\Player\Movement\AnimationHandler.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
      <Compile Include="Assets\Scripts\Items\WeaponSlotManager.cs" />
+     <Compile Include="Assets\Scripts\Player\PlayerStats.cs" />
+     <Compile Include="Assets\Scripts\Player\PlayerAttacker.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
      <Compile Include="Assets\ResetAnimatorBool.cs" />
@@ -52,15 +54,18 @@
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
      <Compile Include="Assets\Scripts\Data\PlayerCharacter.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
-     <Compile Include="Assets\Scripts\Player\PlayerManager.cs" />
+     <Compile Include="Assets\PolygonFantasyHeroCharacters\Scripts\CharacterRandomizer.cs" />
+     <Compile Include="Assets\Scripts\Player\Movement\PlayerManager.cs" />
+     <Compile Include="Assets\Scripts\API\RESTStatus.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
-     <Compile Include="Assets\Scripts\Player\InputHandler.cs" />
+     <Compile Include="Assets\Scripts\Player\Movement\InputHandler.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshProFloatingText.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
      <Compile Include="Assets\Scripts\API\RESTFriend.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
+     <Compile Include="Assets\Scripts\Items\DamageCollider.cs" />
      <Compile Include="Assets\Scripts\Items\WeaponHolderScript.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
@@ -74,14 +79,18 @@
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
      <Compile Include="Assets\Scripts\Player\CameraHandler.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
+     <Compile Include="Assets\Scripts\UI\CharacterCreator.cs" />
      <Compile Include="Assets\Scripts\API\RESTRegister.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
+     <Compile Include="Assets\Scripts\UI\HealthBar.cs" />
      <Compile Include="Assets\Scripts\API\RESTChat.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
-     <Compile Include="Assets\Scripts\Player\PlayerControls.cs" />
+     <Compile Include="Assets\Scripts\Player\EnemyStats.cs" />
+     <Compile Include="Assets\Scripts\Player\Movement\PlayerControls.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
-     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
+     <Compile Include="Assets\Scripts\Player\DamagePlayer.cs" />
+     <Compile Include="Assets\Scripts\Player\Movement\PlayerMovement.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
@@ -95,7 +104,6 @@
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
      <Compile Include="Assets\Scripts\UI\ServerStatus.cs" />
-     <Compile Include="Assets\Scripts\API\RESTStatus.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Scenes" />
      <Folder Include="Assets\UI\Textures\Spell &amp; Item Icons" />
@@ -104,6 +112,7 @@
      <Folder Include="Assets\HONETi\TexturesThemeCommon\Fonts" />
      <Folder Include="Assets\PolygonKnights\Models" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Textures\Textures" />
      <Folder Include="Assets\UI\Textures\Quest Log" />
      <Folder Include="Assets\UI\Textures\Unit Frames\Roles" />
      <Folder Include="Assets\HONETi" />
@@ -116,6 +125,7 @@
      <Folder Include="Assets\Scripts\Items\Weapons" />
      <Folder Include="Assets\UI\Textures\Action Bar" />
      <Folder Include="Assets\UI\Textures\General" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Prefabs\Characters_ModularParts_Static" />
      <Folder Include="Assets\PolygonKnights" />
      <Folder Include="Assets\Settings" />
      <Folder Include="Assets\Assets\2000_Icons\500_skillicons\Skill_nobg" />
@@ -123,12 +133,14 @@
      <Folder Include="Assets\PolygonKnights\Animations" />
      <Folder Include="Assets\UI\Textures\Chat" />
      <Folder Include="Assets\PolygonKnights\Models\Characters\Materials" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Scenes" />
      <Folder Include="Assets\HONETi\TexturesThemeCommon\Buttons\ButtonsRed\ButtonsColors" />
      <Folder Include="Assets\SkyBoxes\Skybox Cubemap Extended\Demo\Textures" />
      <Folder Include="Assets\PolygonKnights\Materials" />
      <Folder Include="Assets\PolygonKnights\Animations\Controllers" />
      <None Include="Assets\SkyBoxes\Skybox Cubemap Extended\Core\Shaders\Skybox Cubemap Extended.shader" />
      <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald-Bold - OFL.txt" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Shaders" />
      <Folder Include="Assets\HONETi\TexturesThemeBlack" />
      <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Anton OFL.txt" />
      <Folder Include="Assets\TextMesh Pro\Resources\Fonts &amp; Materials" />
@@ -155,6 +167,7 @@
      <Folder Include="Assets\UI\Textures\Toggles" />
      <Folder Include="Assets\UI\Textures\Lobby\Tooltip" />
      <Folder Include="Assets\UI\Textures\Lobby\Hero Select" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Prefabs\Weapons" />
      <Folder Include="Assets\UI\Textures\Unit Frames\Avatar" />
      <Folder Include="Assets\SkyBoxes\Skybox Cubemap Extended\Demo\Meshes" />
      <Folder Include="Assets\UI\Textures\Spell Book\Talents\Special Slot" />
@@ -162,6 +175,7 @@
      <Folder Include="Assets\HONETi\TexturesThemeGreen\Input" />
      <Folder Include="Assets\UI\Textures\Tooltip" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Textures\Masks" />
      <Folder Include="Assets\PolygonKnights\Prefabs\Buildings\Snow" />
      <Folder Include="Assets\UI\Textures\Spell Book\Talents\Arrows" />
      <Folder Include="Assets\Settings\Scenes" />
@@ -178,6 +192,7 @@
      <Folder Include="Assets\HONETi\TexturesThemeCommon\Sliders\Bubble" />
      <Folder Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts" />
      <Folder Include="Assets\TextMesh Pro\Examples &amp; Extras\Resources" />
+     <None Include="Assets\PolygonFantasyHeroCharacters\Shaders\POLYGON_CustomCharacters.shader" />
      <Folder Include="Assets\Assets\2000_Icons\500_skillicons" />
      <Folder Include="Assets\Assets" />
      <Folder Include="Assets\HONETi\TexturesThemeCommon\Buttons\ButtonsRed\ButtonsNormal" />
@@ -186,8 +201,10 @@
      <Folder Include="Assets\HONETi\TexturesThemePink" />
      <None Include="Assets\SkyBoxes\Skybox Cubemap Extended\Core\Shaders\Skybox Cubemap Blend.shader" />
      <Folder Include="Assets\UI\Textures\Lobby\Bottom Bar" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Models\ModularCharacter_StaticParts" />
      <Folder Include="Assets\UI\Textures\Sliders" />
      <Folder Include="Assets\UI\Textures\Mobile\Unit Frame" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Scenes\DemoFiles" />
      <Folder Include="Assets\Scripts\UI" />
      <Folder Include="Assets\UI\Textures\Unit Frames\Bars" />
      <Folder Include="Assets\Assets\2000_Icons\Update_icons\neutral_nobg" />
@@ -199,6 +216,7 @@
      <Folder Include="Assets\SkyBoxes\Skybox Cubemap Extended\Core" />
      <Folder Include="Assets\Scripts\API" />
      <Folder Include="Assets\Scripts" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Textures\Masks\Old" />
      <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
      <Folder Include="Assets\UI\Textures\Action Bar\Buttons" />
      <Folder Include="Assets\HONETi\TexturesThemeCommon\Sliders" />
@@ -213,6 +231,7 @@
      <None Include="Assets\HONETi\TexturesThemeCommon\Fonts\OFL.txt" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Prefabs\Characters_Presets" />
      <Folder Include="Assets\HONETi\TexturesThemePink\ButtonsColors" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
      <Folder Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts" />
@@ -224,6 +243,7 @@
      <Folder Include="Assets\UI\Textures\Mobile\Joystick" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
      <Folder Include="Assets\UI\Fonts" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters" />
      <Folder Include="Assets\TextMesh Pro\Shaders" />
      <Folder Include="Assets\UI\Textures\Miscellaneous" />
      <Folder Include="Assets\UI\Textures\Mobile\Action Buttons" />
@@ -250,12 +270,16 @@
      <Folder Include="Assets\Assets\2000_Icons\fr_bg" />
      <Folder Include="Assets\Scenes\Main_Profiles" />
      <Folder Include="Assets\UI\Textures\Mobile\Consumables" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Materials" />
+     <Folder Include="Assets\Scripts\Player\Movement" />
      <Folder Include="Assets\UI\Textures\Demo" />
      <Folder Include="Assets\PolygonKnights\Prefabs\Environments" />
      <Folder Include="Assets\TextMesh Pro\Examples &amp; Extras\Scenes" />
      <Folder Include="Assets\UI\Textures\Mobile" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Prefabs" />
      <Folder Include="Assets\UI\Textures\Unit Frames\Orbs" />
      <Folder Include="Assets\PolygonKnights\Prefabs\Characters\FixedScaleCharacters" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Materials\CustomMaterials" />
      <Folder Include="Assets\UI\Textures\Lobby\Important Message" />
      <Folder Include="Assets\PolygonKnights\Prefabs\Props" />
      <Folder Include="Assets\Assets\2000_Icons\500_skillicons\Skill_standart" />
@@ -276,6 +300,7 @@
      <Folder Include="Assets\HONETi\TexturesThemeGreen" />
      <Folder Include="Assets\UI\Textures\Action Bar\Slot" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Scripts" />
      <Folder Include="Assets\PolygonKnights\Prefabs\Props\Snow" />
      <Folder Include="Assets\PolygonKnights\Models\Characters\FixedScaleCharacters" />
      <Folder Include="Assets\UI\Textures\Lobby\Character Create\Races" />
@@ -284,6 +309,7 @@
      <Folder Include="Assets\PolygonKnights\Prefabs" />
      <Folder Include="Assets\UI\Textures\Lobby" />
      <Folder Include="Assets\UI\Textures\Lobby\Character Select List" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Models" />
      <Folder Include="Assets\HONETi\TexturesThemeGreen\ButtonsColor" />
      <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
      <Folder Include="Assets\TextMesh Pro\Examples &amp; Extras\Textures" />
@@ -291,6 +317,7 @@
      <Folder Include="Assets\Scripts\Player" />
      <Folder Include="Assets\TextMesh Pro\Documentation" />
      <Folder Include="Assets\HONETi\TexturesThemeCommon\Buttons\ButtonaNormalDark" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Textures" />
      <Folder Include="Assets\UI\Textures\Chat\Menu Icons" />
      <Folder Include="Assets\TextMesh Pro\Examples &amp; Extras" />
      <Folder Include="Assets\HONETi\TexturesThemeCommon\Buttons\ButtonaNormalDark\ButtonsNormal" />
@@ -299,13 +326,16 @@
      <Folder Include="Assets\SkyBoxes\Skybox Cubemap Extended\Demo" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
      <Folder Include="Assets\Scenes\ArenaScene_Profiles" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Models\Weapons" />
      <Folder Include="Assets\UI\Textures\Quest Tracker" />
      <Folder Include="Assets\UI\Textures\Spell Book\Talents" />
+     <Folder Include="Assets\ColorPicker" />
      <Folder Include="Assets\TextMesh Pro\Examples &amp; Extras\Resources\Fonts &amp; Materials" />
      <Folder Include="Assets\HONETi\TexturesThemeCommon\Icons\64x64px" />
      <Folder Include="Assets\Assets\2000_Icons\500_armor" />
      <Folder Include="Assets\TextMesh Pro\Examples &amp; Extras\Resources\Color Gradient Presets" />
      <Folder Include="Assets\UI\Textures\Character\Arrows" />
+     <Folder Include="Assets\PolygonFantasyHeroCharacters\Materials\StandardMaterials" />
      <Folder Include="Assets\SkyBoxes\Skybox Cubemap Extended\Core\Functions" />
      <None Include="Assets\TextMesh Pro\Sprites\EmojiOne.json" />
      <Folder Include="Assets\Assets\2000_Icons\Update_icons\skill_b_Standart" />
@@ -1051,6 +1081,9 @@
      <Reference Include="Unity.Services.Core.Environments">
      <HintPath>D:\Projects\RPGGame\rpggame\Library\ScriptAssemblies\Unity.Services.Core.Environments.dll</HintPath>
      </Reference>
+     <Reference Include="HSVPicker">
+     <HintPath>D:\Projects\RPGGame\rpggame\Library\ScriptAssemblies\HSVPicker.dll</HintPath>
+     </Reference>
      <Reference Include="Unity.Timeline.Editor">
      <HintPath>D:\Projects\RPGGame\rpggame\Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
      </Reference>
@@ -1062,6 +1095,9 @@
      </Reference>
      <Reference Include="Unity.Mathematics.Editor">
      <HintPath>D:\Projects\RPGGame\rpggame\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
+     </Reference>
+     <Reference Include="HSVPicker.Editors">
+     <HintPath>D:\Projects\RPGGame\rpggame\Library\ScriptAssemblies\HSVPicker.Editors.dll</HintPath>
      </Reference>
      <Reference Include="Unity.RenderPipelines.Core.Editor">
      <HintPath>D:\Projects\RPGGame\rpggame\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.dll</HintPath>

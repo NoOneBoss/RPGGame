@@ -17,3 +17,5 @@ MonoBehaviour:
   weaponPrefab: {fileID: 4826341948264519940, guid: 47aeb4265bda8874b9bbe6cebbbb3f61,
     type: 3}
   isUnarmed: 0
+  OneHandLightAttack: LightAttack
+  OneHandHeavyAttack: HeavyAttack2

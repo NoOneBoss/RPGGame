@@ -22,8 +22,7 @@ object ChatController {
 
     fun saveMessages() {
         Timer().schedule(0, 100000) {
-            println("[LOG] Saving ${messages.size} messages to database")
-            messages.forEach { chatMessage -> sendMessageToDb(chatMessage)  }
+            forceSaveMessages()
         }
     }
 

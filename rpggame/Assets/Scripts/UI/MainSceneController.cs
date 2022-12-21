@@ -24,6 +24,7 @@ public class MainSceneController : MonoBehaviour
     public GameObject friendPrefab;
 
     private bool friendsIsOpen = false;
+    private RESTStatus statusScript;
     
     public void InputFieldError(int delay, string message)
     {
@@ -59,13 +60,32 @@ public class MainSceneController : MonoBehaviour
                 }
                 if (text.text.Equals("STATUS"))
                 {
-                    text.text = f.friend_date;
+                    statusScript.GetStatus(f.friend_uuid);
+                    if(!statusScript.statuses.ContainsKey(f.friend_uuid)) statusScript.statuses.Add(f.friend_uuid, "Неизвестно");
+
+
+                    switch (statusScript.statuses[f.friend_uuid])
+                    {
+                        case "ARENA":
+                            text.text = "На арене";
+                            text.color = Color.white;
+                            break;
+                        case "MAIN_MENU":
+                            text.text = "В главном меню";
+                            text.color = Color.white;
+                            break;
+                        case "NOT_IN_GAME":
+                            text.text = "Не в игре";
+                            text.color = Color.gray;
+                            break;
+                    }
+
                 }
             }
             friendObject.GetComponentInChildren<Button>().onClick.AddListener(() => friend.removeFriendVoid(f.friend_name));
         }
     }
-    
+
     public void ToggleFriends()
     {
         UpdateFriendsOnUI();
@@ -121,6 +141,7 @@ public class MainSceneController : MonoBehaviour
     public void Start()
     {
         nickname.text = PlayerCharacter.user.login;
+        statusScript = GetComponent<RESTStatus>();
     }
     
     
@@ -128,5 +149,6 @@ public class MainSceneController : MonoBehaviour
     public void openScene(String scene)
     {
         SceneManager.LoadScene(scene);
+        
     }
 }

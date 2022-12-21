@@ -1,15 +1,22 @@
 package ru.nooneboss.database.friends
 
 import ru.nooneboss.database.users.PlayerSession
+import ru.nooneboss.database.users.PostgresAuthController
 import java.util.*
 import kotlin.concurrent.schedule
 
 object StatusController {
-    val sessionStatus = mutableListOf<SessionStatus>()
+    var sessionStatus = mutableListOf<SessionStatus>()
     private val statusConnection = PlayerSession.datasource.connection
 
     fun setStatus(status: SessionStatus){
-        sessionStatus.replaceAll { if(status.user_uuid == it.user_uuid) status else it }
+        sessionStatus.apply {
+            this.map {
+                if(it.user_uuid == status.user_uuid){
+                    it.status = status.status
+                }
+            }
+        }
     }
 
     fun getStatus(uuid: UUID): SessionStatus{
@@ -18,9 +25,7 @@ object StatusController {
 
     fun saveStatuses(){
         Timer().schedule(0, 100000) {
-            sessionStatus.forEach { status ->
-                updateStatus(status)
-            }
+            forceSaveStatuses()
         }
     }
 
@@ -28,22 +33,25 @@ object StatusController {
         sessionStatus.forEach { status ->
             updateStatus(status)
         }
+        println("[LOG] Saved ${sessionStatus.size} statuses to database")
     }
 
     fun loadStatuses(){
-        val statement = statusConnection.createStatement()
+        val statement = PostgresAuthController.connection.createStatement()
 
-        val result = statement.executeQuery("SELECT (user_uuid, last_status) FROM rpgtrader.play.users")
+        val result = statement.executeQuery("SELECT user_uuid, last_status FROM rpgtrader.play.users")
         while (result.next()){
             val uuid = UUID.fromString(result.getString("user_uuid"))
             val status = SessionStatusEnum.valueOf(result.getString("last_status"))
 
             sessionStatus.add(SessionStatus(uuid, status))
         }
+
+        println("[LOG] Loaded ${sessionStatus.size} statuses from database")
     }
 
     private fun updateStatus(status: SessionStatus){
-        val statement = statusConnection.prepareStatement("UPDATE rpgtrader.play.users SET last_status = ? WHERE user_uuid = ?")
+        val statement = PostgresAuthController.connection.prepareStatement("UPDATE rpgtrader.play.users SET last_status = ? WHERE user_uuid = ?")
         statement.setString(1, status.status.toString())
         statement.setObject(2, status.user_uuid)
 
@@ -52,7 +60,7 @@ object StatusController {
 
 }
 
-class SessionStatus(val user_uuid: UUID, val status: SessionStatusEnum)
+class SessionStatus(val user_uuid: UUID, var status: SessionStatusEnum)
 
 enum class SessionStatusEnum {
     MAIN_MENU,

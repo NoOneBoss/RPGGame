@@ -122,7 +122,6 @@ fun Application.configureRouting() {
 
             get<LocationStatus> {
                 val user = call.principal<User>() ?: return@get call.respondText("Unauthorized", status = HttpStatusCode.Unauthorized)
-                if(user.user_uuid != it.uuid) return@get call.respondText("Forbidden", status = HttpStatusCode.Forbidden)
 
                 call.respondText(Gson().toJson(StatusController.getStatus(it.uuid)), status = HttpStatusCode.OK)
             }

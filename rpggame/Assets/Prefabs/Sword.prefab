@@ -44,6 +44,8 @@ GameObject:
   - component: {fileID: 2227201544421736461}
   - component: {fileID: 2227201544420462171}
   - component: {fileID: 2165154090064785201}
+  - component: {fileID: 2606131656684050628}
+  - component: {fileID: 9191829764323987631}
   m_Layer: 0
   m_Name: Sword
   m_TagString: Untagged
@@ -130,6 +132,31 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43873980847829622, guid: e79c25ba848da8945a25117a1a1ea059, type: 2}
+--- !u!65 &2606131656684050628
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2227201544418511289}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.24404018, y: 0.6480281, z: 0.05988251}
+  m_Center: {x: -0.000000047683724, y: 0.46981364, z: 0.00000010910411}
+--- !u!114 &9191829764323987631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2227201544418511289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a451568b8891594f91a244ad1d20f96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4826341948264519940
 GameObject:
   m_ObjectHideFlags: 0
