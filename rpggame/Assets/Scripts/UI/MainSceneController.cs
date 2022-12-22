@@ -9,14 +9,10 @@ using UnityEngine.UI;
 
 public class MainSceneController : MonoBehaviour
 {
-    [Header("Sprites")]
-    public Sprite openSprite;
-    public Sprite closeSprite;
-    
     [Header("Friends")]
     public GameObject friendsPanel;
-    public GameObject friendButton;
-    public Image friendButtonImage;
+    public GameObject friendOpenButton;
+    public GameObject friendCloseButton;
     public GameObject friendInputPlaceholder;
     public TMP_InputField friendInputField;
 
@@ -93,17 +89,17 @@ public class MainSceneController : MonoBehaviour
         friendsPanel.SetActive(friendsIsOpen);
         if (friendsIsOpen)
         {
-            friendButton.transform.position = new Vector3(friendButton.transform.position.x + 88.5f, friendButton.transform.position.y + 369, friendButton.transform.position.z);
-            friendButtonImage.sprite = closeSprite;
+            friendOpenButton.SetActive(false);
+            friendCloseButton.SetActive(true);
             
-            chatButton.SetActive(false);
+            chatOpenButton.SetActive(false);
         }
         else
         {
-            friendButton.transform.position = new Vector3(friendButton.transform.position.x - 88.5f, friendButton.transform.position.y - 369, friendButton.transform.position.z);
-            friendButtonImage.sprite = openSprite;
+            friendOpenButton.SetActive(true);
+            friendCloseButton.SetActive(false);
             
-            chatButton.SetActive(true);
+            chatOpenButton.SetActive(true);
         }
     }
     
@@ -111,7 +107,8 @@ public class MainSceneController : MonoBehaviour
     
     [Header("Chat")]
     public GameObject chatPanel;
-    public GameObject chatButton;
+    public GameObject chatOpenButton;
+    public GameObject chatCloseButton;
     public Image chatButtonImage;
     private bool chatIsOpen = false;
     
@@ -121,17 +118,17 @@ public class MainSceneController : MonoBehaviour
         chatPanel.SetActive(chatIsOpen);
         if (chatIsOpen)
         {
-            chatButton.transform.position = new Vector3(chatButton.transform.position.x, chatButton.transform.position.y + 165, chatButton.transform.position.z);
-            chatButtonImage.sprite = closeSprite;
+            chatOpenButton.SetActive(false);
+            chatCloseButton.SetActive(true);
             
-            friendButton.SetActive(false);
+            friendOpenButton.SetActive(false);
         }
         else
         {
-            chatButton.transform.position = new Vector3(chatButton.transform.position.x, chatButton.transform.position.y - 165, chatButton.transform.position.z);
-            chatButtonImage.sprite = openSprite;
+            chatOpenButton.SetActive(true);
+            chatCloseButton.SetActive(false);
             
-            friendButton.SetActive(true);
+            friendOpenButton.SetActive(true);
         }
     }
     

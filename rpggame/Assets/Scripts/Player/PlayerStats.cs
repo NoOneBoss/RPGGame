@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerStats : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class PlayerStats : MonoBehaviour
     
     public HealthBar healthBar;
     private AnimationHandler animationHandler;
-    
+
     public void Start()
     {
         animationHandler = GetComponentInChildren<AnimationHandler>();
@@ -34,6 +35,15 @@ public class PlayerStats : MonoBehaviour
         {
             currentHealth = 0;
             animationHandler.PlayTargetAnimation("Death", true);
+            healthBar.diedscreen.enabled = true;
+            healthBar.diedscreen.gameObject.SetActive(true);
+            StartCoroutine(Die());
         }
+    }
+    
+    private IEnumerator Die()
+    {
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene("Main");
     }
 }

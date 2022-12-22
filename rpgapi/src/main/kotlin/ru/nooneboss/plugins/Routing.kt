@@ -1,6 +1,7 @@
 package ru.nooneboss.plugins
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
@@ -11,6 +12,8 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import ru.nooneboss.database.arena.ArenaController
+import ru.nooneboss.database.arena.ArenaSave
 import ru.nooneboss.database.characters.CharacterController
 import ru.nooneboss.database.chat.ChatController
 import ru.nooneboss.database.chat.ChatMessage
@@ -154,6 +157,16 @@ fun Application.configureRouting() {
                 call.respondText("Character created", status = HttpStatusCode.OK)
                 println("[LOG] User ${user.user_uuid} created character.")
                 PostgresLogsController.log(LogMessage(user.user_uuid, null, "Created character", call.request.origin.remoteHost, true))
+            }
+
+
+            post("/arenastates/update"){
+                val user = call.principal<User>() ?: return@post call.respondText("Unauthorized", status = HttpStatusCode.Unauthorized)
+
+                val arenaSave = call.receive<ArenaSave>()
+                println(GsonBuilder().create().toJson(arenaSave))
+                ArenaController.updateArenaState(arenaSave)
+                call.respondText("Arena state updated", status = HttpStatusCode.OK)
             }
 
         }

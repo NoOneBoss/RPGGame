@@ -106,6 +106,7 @@
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
      <Compile Include="Assets\Scripts\UI\ServerStatus.cs" />
+     <Compile Include="Assets\Scripts\Data\ArenaSaver.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Scenes" />
      <Folder Include="Assets\UI\Textures\Spell &amp; Item Icons" />
@@ -141,6 +142,7 @@
      <Folder Include="Assets\PolygonKnights\Materials" />
      <Folder Include="Assets\PolygonKnights\Animations\Controllers" />
      <None Include="Assets\SkyBoxes\Skybox Cubemap Extended\Core\Shaders\Skybox Cubemap Extended.shader" />
+     <Folder Include="Assets\Bags" />
      <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald-Bold - OFL.txt" />
      <Folder Include="Assets\PolygonFantasyHeroCharacters\Shaders" />
      <Folder Include="Assets\HONETi\TexturesThemeBlack" />
@@ -176,9 +178,11 @@
      <Folder Include="Assets\UI\Textures\Lobby\Character Create\Frame" />
      <Folder Include="Assets\HONETi\TexturesThemeGreen\Input" />
      <Folder Include="Assets\UI\Textures\Tooltip" />
+     <Folder Include="Assets\Scripts\Items\InvItems" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
      <Folder Include="Assets\PolygonFantasyHeroCharacters\Textures\Masks" />
      <Folder Include="Assets\PolygonKnights\Prefabs\Buildings\Snow" />
+     <Folder Include="Assets\Bags\models" />
      <Folder Include="Assets\UI\Textures\Spell Book\Talents\Arrows" />
      <Folder Include="Assets\Settings\Scenes" />
      <Folder Include="Assets\SkyBoxes\Skybox Cubemap Extended\Demo\Materials" />
@@ -617,6 +621,12 @@
      </Reference>
      <Reference Include="Newtonsoft.Json">
      <HintPath>D:\Projects\RPGGame\rpggame\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Android.Types">
+     <HintPath>D:\Programms\Unity\Editor\2021.3.14f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Android.Gradle">
+     <HintPath>D:\Programms\Unity\Editor\2021.3.14f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
      </Reference>
      <Reference Include="netstandard">
      <HintPath>D:\Programms\Unity\Editor\2021.3.14f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>
