@@ -17,139 +17,42 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: play; Type: SCHEMA; Schema: -; Owner: postgres
+-- Name: rpgtrader; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE SCHEMA play;
+CREATE DATABASE rpgtrader WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'Russian_Russia.1251';
 
 
-ALTER SCHEMA play OWNER TO postgres;
+ALTER DATABASE rpgtrader OWNER TO postgres;
 
---
--- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
---
+\connect rpgtrader
 
-CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA play;
-
-
---
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
-
-
---
--- Name: status; Type: TYPE; Schema: play; Owner: postgres
---
-
-CREATE TYPE play.status AS ENUM (
-    'MAIN_MENU',
-    'ARENA',
-    'NOT_IN_GAME'
-);
-
-
-ALTER TYPE play.status OWNER TO postgres;
-
---
--- Name: account_already_exist(character varying); Type: FUNCTION; Schema: play; Owner: postgres
---
-
-CREATE FUNCTION play.account_already_exist(checklogin character varying) RETURNS boolean
-    LANGUAGE sql
-    AS $$select exists(select login from users where login = crypt_login(checkLogin))$$;
-
-
-ALTER FUNCTION play.account_already_exist(checklogin character varying) OWNER TO postgres;
-
---
--- Name: auth(character varying, character varying); Type: FUNCTION; Schema: play; Owner: postgres
---
-
-CREATE FUNCTION play.auth(inputlogin character varying, inputpassword character varying) RETURNS boolean
-    LANGUAGE plpgsql
-    AS $$
-    DECLARE loginVar boolean;
-    BEGIN
-        select (select exists(select login from users where login = inputLogin and password = crypt_password(inputPassword))) into loginVar;
-        if loginVar then update users set last_login = now() where login = inputLogin; end if;
-        return loginVar;
-    END
-    $$;
-
-
-ALTER FUNCTION play.auth(inputlogin character varying, inputpassword character varying) OWNER TO postgres;
-
---
--- Name: crypt_login(character varying); Type: FUNCTION; Schema: play; Owner: postgres
---
-
-CREATE FUNCTION play.crypt_login(login character varying) RETURNS character varying
-    LANGUAGE sql
-    AS $_$select crypt(login, '$1$p214sdSa')$_$;
-
-
-ALTER FUNCTION play.crypt_login(login character varying) OWNER TO postgres;
-
---
--- Name: crypt_password(character varying); Type: FUNCTION; Schema: play; Owner: postgres
---
-
-CREATE FUNCTION play.crypt_password(password character varying) RETURNS character varying
-    LANGUAGE sql
-    AS $_$select crypt(password, '$1$pNlHbFsc')$_$;
-
-
-ALTER FUNCTION play.crypt_password(password character varying) OWNER TO postgres;
-
---
--- Name: crypt_password(character varying, character varying); Type: FUNCTION; Schema: play; Owner: postgres
---
-
-CREATE FUNCTION play.crypt_password(password character varying, login character varying) RETURNS character varying
-    LANGUAGE sql
-    AS $_$select crypt(password, '$1$pNlHbFsc')$_$;
-
-
-ALTER FUNCTION play.crypt_password(password character varying, login character varying) OWNER TO postgres;
-
---
--- Name: log(uuid, uuid, character varying, character varying, boolean); Type: PROCEDURE; Schema: play; Owner: postgres
---
-
-CREATE PROCEDURE play.log(IN executor uuid, IN charactor uuid, IN action character varying, IN ipaddress character varying, IN ispersistance boolean)
-    LANGUAGE plpgsql
-    AS $$
-    BEGIN
-        insert into logs(executor, character,action, "ipAddress", "isPersistence")
-        values(executor, charactor, action, ipAddress, isPersistance);
-    END
-    $$;
-
-
-ALTER PROCEDURE play.log(IN executor uuid, IN charactor uuid, IN action character varying, IN ipaddress character varying, IN ispersistance boolean) OWNER TO postgres;
-
---
--- Name: register(character varying, character varying); Type: PROCEDURE; Schema: play; Owner: postgres
---
-
-CREATE PROCEDURE play.register(IN inputlogin character varying, IN inputpassword character varying)
-    LANGUAGE plpgsql
-    AS $$
-    BEGIN
-        insert into users(login, password) values(inputLogin, crypt_password(inputPassword, inputLogin));
-        --execute format('create role %I with login password ''%I''', inputLogin, inputPassword);
-        --execute format('grant rpgtraderplayer to %I', inputLogin);
-    END
-    $$;
-
-
-ALTER PROCEDURE play.register(IN inputlogin character varying, IN inputpassword character varying) OWNER TO postgres;
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
 
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: character_skins; Type: TABLE; Schema: play; Owner: postgres
+--
+
+CREATE TABLE play.character_skins (
+    character_uuid uuid NOT NULL,
+    skin jsonb NOT NULL
+);
+
+
+ALTER TABLE play.character_skins OWNER TO postgres;
 
 --
 -- Name: characters; Type: TABLE; Schema: play; Owner: postgres
@@ -159,8 +62,7 @@ CREATE TABLE play.characters (
     character_uuid uuid DEFAULT gen_random_uuid() NOT NULL,
     level integer DEFAULT 0 NOT NULL,
     money integer DEFAULT 0 NOT NULL,
-    inventory uuid NOT NULL,
-    character_skin uuid NOT NULL
+    owner uuid NOT NULL
 );
 
 
@@ -204,31 +106,11 @@ CREATE TABLE play.users (
     role character varying(10) DEFAULT 'player'::character varying NOT NULL,
     last_login timestamp without time zone,
     registration_time timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    last_status character varying(15) DEFAULT 'NOT_IN_GAME'::character varying,
-    character_uuid uuid
+    last_status character varying(15) DEFAULT 'NOT_IN_GAME'::character varying
 );
 
 
 ALTER TABLE play.users OWNER TO postgres;
-
---
--- Name: friendview; Type: VIEW; Schema: play; Owner: postgres
---
-
-CREATE VIEW play.friendview AS
- SELECT friends.first AS user_uuid,
-    friends.second AS friend_uuid,
-    ( SELECT users.login AS user_name
-           FROM play.users
-          WHERE (users.user_uuid = friends.first)) AS user_name,
-    ( SELECT users.login AS friend_name
-           FROM play.users
-          WHERE (users.user_uuid = friends.second)) AS friend_name,
-    friends.friend_date
-   FROM play.friends;
-
-
-ALTER TABLE play.friendview OWNER TO postgres;
 
 --
 -- Name: logs; Type: TABLE; Schema: play; Owner: postgres
@@ -247,10 +129,20 @@ CREATE TABLE play.logs (
 ALTER TABLE play.logs OWNER TO postgres;
 
 --
+-- Data for Name: character_skins; Type: TABLE DATA; Schema: play; Owner: postgres
+--
+
+COPY play.character_skins (character_uuid, skin) FROM stdin;
+338029be-242d-464b-b289-5ab92fa43008	{"leg": 0, "hair": 0, "hand": 0, "head": 0, "hips": 0, "knee": 0, "elbow": 0, "torso": 0, "gender": 1, "helmet": -1, "armLower": 0, "armUpper": 0, "backAttachment": 0, "hipsAttachment": 0, "shoulderAttachment": 0}
+\.
+
+
+--
 -- Data for Name: characters; Type: TABLE DATA; Schema: play; Owner: postgres
 --
 
-COPY play.characters (character_uuid, level, money, inventory, character_skin) FROM stdin;
+COPY play.characters (character_uuid, level, money, owner) FROM stdin;
+338029be-242d-464b-b289-5ab92fa43008	0	0	45c6e0b5-6f42-453a-90b7-8176abb1d68b
 \.
 
 
@@ -541,6 +433,64 @@ f153040f-e6c6-4bf1-b208-0823393b3adb	\N	2022-12-17 19:54:01.669476	Sent message:
 45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-20 21:32:57.331846	Authenticate	127.0.0.1	t
 45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-21 12:46:37.292625	Authenticate	127.0.0.1	t
 45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-21 12:46:50.523066	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 01:28:33.803641	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 01:32:59.435817	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 01:34:45.628143	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 01:35:33.119771	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 01:38:42.306366	Created character	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 01:46:30.105396	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 01:50:08.636919	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 01:51:27.68554	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 01:51:33.612364	Created character	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 11:49:28.971999	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 11:50:38.114476	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 11:51:29.684238	Created character	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 11:51:32.876546	Created character	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 11:51:33.451625	Created character	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 11:51:33.646689	Created character	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 11:51:34.048183	Created character	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 11:52:13.489207	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:09:45.004173	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:10:43.127672	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:11:07.347826	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:11:55.906885	Authenticate	0:0:0:0:0:0:0:1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:12:34.70291	Created character	0:0:0:0:0:0:0:1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:14:09.815909	Authenticate	0:0:0:0:0:0:0:1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:15:37.692289	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:16:06.6814	Created character	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:16:51.068509	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:19:32.022441	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:21:43.122252	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:24:45.981943	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:25:55.462184	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:26:31.949643	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:27:01.61929	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:29:07.882221	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:30:43.787048	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:31:34.866897	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:31:47.648774	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:31:48.615187	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:31:48.807997	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:31:48.986167	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:31:49.165154	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:32:13.132379	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:32:40.994182	Created character	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:35:17.837029	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:37:42.603185	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:40:12.772973	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:41:01.148614	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:48:58.071588	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:58:43.22987	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 12:59:10.335242	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 13:00:07.78946	Created character	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 13:07:11.864073	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 13:07:54.810762	Created character	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 13:10:33.529678	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 13:10:39.715743	Created character	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 13:15:57.73704	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 13:16:35.450546	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 13:21:39.664514	Authenticate	127.0.0.1	t
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	\N	2022-12-22 13:22:28.249226	Authenticate	127.0.0.1	t
 \.
 
 
@@ -548,14 +498,14 @@ f153040f-e6c6-4bf1-b208-0823393b3adb	\N	2022-12-17 19:54:01.669476	Sent message:
 -- Data for Name: users; Type: TABLE DATA; Schema: play; Owner: postgres
 --
 
-COPY play.users (user_uuid, login, password, role, last_login, registration_time, last_status, character_uuid) FROM stdin;
-45c6e0b5-6f42-453a-90b7-8176abb1d68b	q	$1$pNlHbFsc$CbsmKokwRD13GzLYeqnRI0	player	2022-12-21 12:48:08.937049	2022-12-17 12:56:06.941547	NOT_IN_GAME	\N
-f153040f-e6c6-4bf1-b208-0823393b3adb	n	$1$pNlHbFsc$hDhYj3YtnQw81ek6v/IXj1	player	2022-12-17 17:01:59.7075	2022-11-28 18:02:16.204709	NOT_IN_GAME	\N
-75af33fb-4c78-4199-946d-17723604c948	test1	$1$pNlHbFsc$qLk0lzrWpyQ.dO/MlkYe51	player	2022-12-10 21:43:20.817146	2022-12-10 21:32:18.044284	NOT_IN_GAME	\N
-968af0c6-957e-4e6e-bf30-22282660467b	boss	$1$pNlHbFsc$qLk0lzrWpyQ.dO/MlkYe51	player	2022-12-19 23:55:06.553229	2022-12-03 17:14:28.888011	NOT_IN_GAME	\N
-8698f040-5521-4baf-9652-7b45b2a1faac	brim	$1$pNlHbFsc$qLk0lzrWpyQ.dO/MlkYe51	player	2022-12-19 19:52:40.398601	2022-12-09 20:29:49.3803	NOT_IN_GAME	\N
-887cb12f-1239-420f-9b43-0af75764446d	test	$1$pNlHbFsc$qLk0lzrWpyQ.dO/MlkYe51	player	\N	2022-12-10 21:31:38.964786	NOT_IN_GAME	\N
-d469027f-8ee9-4a41-8e08-5202f7ef57ae	nooneboss	$1$pNlHbFsc$qLk0lzrWpyQ.dO/MlkYe51	player	2022-12-01 11:12:15.285229	2022-12-01 11:11:53.281587	NOT_IN_GAME	\N
+COPY play.users (user_uuid, login, password, role, last_login, registration_time, last_status) FROM stdin;
+75af33fb-4c78-4199-946d-17723604c948	test1	$1$pNlHbFsc$qLk0lzrWpyQ.dO/MlkYe51	player	2022-12-10 21:43:20.817146	2022-12-10 21:32:18.044284	NOT_IN_GAME
+968af0c6-957e-4e6e-bf30-22282660467b	boss	$1$pNlHbFsc$qLk0lzrWpyQ.dO/MlkYe51	player	2022-12-19 23:55:06.553229	2022-12-03 17:14:28.888011	NOT_IN_GAME
+8698f040-5521-4baf-9652-7b45b2a1faac	brim	$1$pNlHbFsc$qLk0lzrWpyQ.dO/MlkYe51	player	2022-12-19 19:52:40.398601	2022-12-09 20:29:49.3803	NOT_IN_GAME
+887cb12f-1239-420f-9b43-0af75764446d	test	$1$pNlHbFsc$qLk0lzrWpyQ.dO/MlkYe51	player	\N	2022-12-10 21:31:38.964786	NOT_IN_GAME
+d469027f-8ee9-4a41-8e08-5202f7ef57ae	nooneboss	$1$pNlHbFsc$qLk0lzrWpyQ.dO/MlkYe51	player	2022-12-01 11:12:15.285229	2022-12-01 11:11:53.281587	NOT_IN_GAME
+45c6e0b5-6f42-453a-90b7-8176abb1d68b	q	$1$pNlHbFsc$CbsmKokwRD13GzLYeqnRI0	player	2022-12-22 13:22:42.030784	2022-12-17 12:56:06.941547	NOT_IN_GAME
+f153040f-e6c6-4bf1-b208-0823393b3adb	n	$1$pNlHbFsc$hDhYj3YtnQw81ek6v/IXj1	player	2022-12-17 17:01:59.7075	2022-11-28 18:02:16.204709	NOT_IN_GAME
 \.
 
 
@@ -589,6 +539,22 @@ ALTER TABLE ONLY play.chat
 
 ALTER TABLE ONLY play.users
     ADD CONSTRAINT users_pk PRIMARY KEY (user_uuid);
+
+
+--
+-- Name: character_skins character_skins_characters_null_fk; Type: FK CONSTRAINT; Schema: play; Owner: postgres
+--
+
+ALTER TABLE ONLY play.character_skins
+    ADD CONSTRAINT character_skins_characters_null_fk FOREIGN KEY (character_uuid) REFERENCES play.characters(character_uuid);
+
+
+--
+-- Name: characters characters_users_null_fk; Type: FK CONSTRAINT; Schema: play; Owner: postgres
+--
+
+ALTER TABLE ONLY play.characters
+    ADD CONSTRAINT characters_users_null_fk FOREIGN KEY (owner) REFERENCES play.users(user_uuid);
 
 
 --
@@ -632,47 +598,45 @@ ALTER TABLE ONLY play.logs
 
 
 --
--- Name: users users_characters_null_fk; Type: FK CONSTRAINT; Schema: play; Owner: postgres
---
-
-ALTER TABLE ONLY play.users
-    ADD CONSTRAINT users_characters_null_fk FOREIGN KEY (character_uuid) REFERENCES play.characters(character_uuid);
-
-
---
 -- Name: users; Type: ROW SECURITY; Schema: play; Owner: postgres
 --
 
 ALTER TABLE play.users ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: SCHEMA play; Type: ACL; Schema: -; Owner: postgres
+-- Name: DATABASE rpgtrader; Type: ACL; Schema: -; Owner: postgres
 --
 
-GRANT USAGE ON SCHEMA play TO rpgtraderauth;
-GRANT USAGE ON SCHEMA play TO rpgtraderplayer;
-GRANT USAGE ON SCHEMA play TO rpgtraderlogs;
-
-
---
--- Name: FUNCTION account_already_exist(checklogin character varying); Type: ACL; Schema: play; Owner: postgres
---
-
-GRANT ALL ON FUNCTION play.account_already_exist(checklogin character varying) TO rpgtraderauth;
+GRANT CREATE,CONNECT ON DATABASE rpgtrader TO rpgtraderauth;
+GRANT CONNECT ON DATABASE rpgtrader TO rpgtraderlogs;
 
 
 --
--- Name: FUNCTION auth(inputlogin character varying, inputpassword character varying); Type: ACL; Schema: play; Owner: postgres
+-- Name: TABLE character_skins; Type: ACL; Schema: play; Owner: postgres
 --
 
-GRANT ALL ON FUNCTION play.auth(inputlogin character varying, inputpassword character varying) TO rpgtraderauth;
+GRANT SELECT,INSERT ON TABLE play.character_skins TO rpgtraderplayer;
 
 
 --
--- Name: FUNCTION crypt_password(password character varying, login character varying); Type: ACL; Schema: play; Owner: postgres
+-- Name: TABLE characters; Type: ACL; Schema: play; Owner: postgres
 --
 
-GRANT ALL ON FUNCTION play.crypt_password(password character varying, login character varying) TO rpgtraderauth;
+GRANT SELECT,INSERT ON TABLE play.characters TO rpgtraderplayer;
+
+
+--
+-- Name: COLUMN characters.level; Type: ACL; Schema: play; Owner: postgres
+--
+
+GRANT UPDATE(level) ON TABLE play.characters TO rpgtraderplayer;
+
+
+--
+-- Name: COLUMN characters.money; Type: ACL; Schema: play; Owner: postgres
+--
+
+GRANT UPDATE(money) ON TABLE play.characters TO rpgtraderplayer;
 
 
 --
@@ -716,13 +680,6 @@ GRANT UPDATE(last_login) ON TABLE play.users TO rpgtraderauth;
 
 GRANT UPDATE(last_status) ON TABLE play.users TO rpgtraderplayer;
 GRANT UPDATE(last_status) ON TABLE play.users TO rpgtraderauth;
-
-
---
--- Name: TABLE friendview; Type: ACL; Schema: play; Owner: postgres
---
-
-GRANT SELECT ON TABLE play.friendview TO rpgtraderplayer;
 
 
 --

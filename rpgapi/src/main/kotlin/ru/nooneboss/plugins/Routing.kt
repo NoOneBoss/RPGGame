@@ -11,6 +11,7 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import ru.nooneboss.database.characters.CharacterController
 import ru.nooneboss.database.chat.ChatController
 import ru.nooneboss.database.chat.ChatMessage
 import ru.nooneboss.database.friends.FriendController
@@ -136,6 +137,25 @@ fun Application.configureRouting() {
                 println("[LOG] User ${user.user_uuid} updated status to ${status.status}")
             }
 
+            get<LocationCharacters> {
+                val user = call.principal<User>() ?: return@get call.respondText("Unauthorized", status = HttpStatusCode.Unauthorized)
+                if(it.uuid != user.user_uuid) return@get call.respondText("Forbidden", status = HttpStatusCode.Forbidden)
+                CharacterController.updateCharacters(user.user_uuid)
+
+                call.respondText(Gson().toJson(CharacterController.getCharacters(it.uuid)), status = HttpStatusCode.OK)
+            }
+
+            post("/characters/create") {
+                val user = call.principal<User>() ?: return@post call.respondText("Unauthorized", status = HttpStatusCode.Unauthorized)
+
+                val characterSkin = call.receive<String>()
+
+                CharacterController.addCharacter(user.user_uuid, characterSkin)
+                call.respondText("Character created", status = HttpStatusCode.OK)
+                println("[LOG] User ${user.user_uuid} created character.")
+                PostgresLogsController.log(LogMessage(user.user_uuid, null, "Created character", call.request.origin.remoteHost, true))
+            }
+
         }
 
     }
@@ -160,3 +180,7 @@ class LocationFriends(val uuid: UUID)
 @OptIn(KtorExperimentalLocationsAPI::class)
 @Location("/status/{uuid}")
 class LocationStatus(val uuid: UUID)
+
+@OptIn(KtorExperimentalLocationsAPI::class)
+@Location("/characters/{uuid}")
+class LocationCharacters(val uuid: UUID)

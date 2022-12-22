@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ArenaScene.unity
     guid: bb326878ee64c1e48a4bcbe3923af467
+  - enabled: 1
+    path: Assets/Scenes/CharacterCreationScene.unity
+    guid: 74adb617eb0cadc438390a6b3035bb40
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 6f100a6ca4721b84cb257b1090323dc9,
       type: 2}

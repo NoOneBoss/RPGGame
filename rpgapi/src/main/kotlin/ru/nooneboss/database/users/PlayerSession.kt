@@ -1,6 +1,7 @@
 package ru.nooneboss.database.users
 
 import com.zaxxer.hikari.HikariDataSource
+import ru.nooneboss.database.characters.CharacterController
 import ru.nooneboss.database.chat.ChatController
 import ru.nooneboss.database.friends.FriendController
 import ru.nooneboss.database.friends.StatusController
@@ -50,5 +51,7 @@ object PlayerSession {
 
         StatusController.saveStatuses()
         StatusController.loadStatuses()
+
+        CharacterController.loadCharacters()
     }
 }

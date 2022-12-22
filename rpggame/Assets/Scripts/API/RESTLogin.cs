@@ -75,7 +75,12 @@ public class RESTLogin : MonoBehaviour
         else if(request.result == UnityWebRequest.Result.Success)
         {
             PlayerCharacter.token = request.downloadHandler.text;
-            sceneNavigator.openScene("Main");
+            yield return StartCoroutine(GetComponent<RESTCharacter>().GetCharacters());
+            
+            if(PlayerCharacter.characterList.characters.Count == 0)
+                sceneNavigator.openScene("CharacterCreationScene");
+            else
+                sceneNavigator.openScene("Main");
         }
     }
 

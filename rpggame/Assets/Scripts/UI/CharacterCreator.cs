@@ -9,9 +9,10 @@ using UnityEngine.UI;
 
 public class CharacterCreator : MonoBehaviour
 {
+    public RESTCharacter restCharacter;
     public CharacterRandomizer randomizer;
     public Gender gender = Gender.Male;
-    
+
     [Header("Head")]
     public TMP_Dropdown headDropdown;
     public TMP_Dropdown hairDropdown;
@@ -26,6 +27,14 @@ public class CharacterCreator : MonoBehaviour
     public TMP_Dropdown hipsDropdown;
     public TMP_Dropdown legsDropdown;
 
+    [Header("Other")]
+    public TMP_Dropdown helmet;
+    public TMP_Dropdown backAttach;
+    public TMP_Dropdown shoulders;
+    public TMP_Dropdown elbows;
+    public TMP_Dropdown hipsAttach;
+    public TMP_Dropdown knees;
+
 
     public void LoadDropDowns(Gender gender)
     {
@@ -37,13 +46,24 @@ public class CharacterCreator : MonoBehaviour
         handDropdown.ClearOptions();
         hipsDropdown.ClearOptions();
         legsDropdown.ClearOptions();
-        
+        helmet.ClearOptions();
+        backAttach.ClearOptions();
+        shoulders.ClearOptions();
+        elbows.ClearOptions();
+        hipsAttach.ClearOptions();
+        knees.ClearOptions();
+
         switch (gender)
         {
             case Gender.Male:
                 headDropdown.onValueChanged.RemoveAllListeners();
                 headDropdown.onValueChanged.AddListener((int i) => ChangePart(i, randomizer.male.headAllElements));
                 headDropdown.AddOptions(randomizer.male.headAllElements.Select(x => $"Голова {randomizer.male.headAllElements.IndexOf(x)}").ToList());
+                
+                helmet.onValueChanged.RemoveAllListeners();
+                helmet.onValueChanged.AddListener((int i) => EnableHelmet(i, randomizer.male.headNoElements, randomizer.male.headAllElements, randomizer.allGender.all_Hair));
+                helmet.options.Add(new TMP_Dropdown.OptionData("Без шлема"));
+                helmet.AddOptions(randomizer.male.headNoElements.Select(x => $"Шлем {randomizer.male.headNoElements.IndexOf(x)}").ToList());
                 
                 torsoDropdown.onValueChanged.RemoveAllListeners();
                 torsoDropdown.onValueChanged.AddListener((int i) => ChangePart(i, randomizer.male.torso));
@@ -74,6 +94,11 @@ public class CharacterCreator : MonoBehaviour
                 headDropdown.onValueChanged.AddListener((int i) => ChangePart(i, randomizer.female.headAllElements));
                 headDropdown.AddOptions(randomizer.female.headAllElements.Select(x => $"Голова {randomizer.female.headAllElements.IndexOf(x)}").ToList());
                 
+                helmet.onValueChanged.RemoveAllListeners();
+                helmet.onValueChanged.AddListener((int i) => EnableHelmet(i, randomizer.female.headNoElements, randomizer.female.headAllElements, randomizer.allGender.all_Hair));
+                helmet.options.Add(new TMP_Dropdown.OptionData("Без шлема"));
+                helmet.AddOptions(randomizer.female.headNoElements.Select(x => $"Шлем {randomizer.female.headNoElements.IndexOf(x)}").ToList());
+                
                 torsoDropdown.onValueChanged.RemoveAllListeners();
                 torsoDropdown.onValueChanged.AddListener((int i) => ChangePart(i, randomizer.female.torso));
                 torsoDropdown.AddOptions(randomizer.female.torso.Select(x => $"Тело {randomizer.female.torso.IndexOf(x)}").ToList());
@@ -103,6 +128,26 @@ public class CharacterCreator : MonoBehaviour
         hairDropdown.onValueChanged.RemoveAllListeners();
         hairDropdown.onValueChanged.AddListener((int i) => ChangePart(i, randomizer.allGender.all_Hair));
         hairDropdown.AddOptions(randomizer.allGender.all_Hair.Select(x => $"Причёска {randomizer.allGender.all_Hair.IndexOf(x)}").ToList());
+        
+        backAttach.onValueChanged.RemoveAllListeners();
+        backAttach.onValueChanged.AddListener((int i) => ChangePart(i, randomizer.allGender.back_Attachment));
+        backAttach.AddOptions(randomizer.allGender.back_Attachment.Select(x => $"Спина {randomizer.allGender.back_Attachment.IndexOf(x)}").ToList());
+        
+        shoulders.onValueChanged.RemoveAllListeners();
+        shoulders.onValueChanged.AddListener((int i) => ChangeDualPart(i, randomizer.allGender.shoulder_Attachment_Left, randomizer.allGender.shoulder_Attachment_Right));
+        shoulders.AddOptions(randomizer.allGender.shoulder_Attachment_Left.Select(x => $"Доп. наплечники {randomizer.allGender.shoulder_Attachment_Left.IndexOf(x)}").ToList());
+        
+        elbows.onValueChanged.RemoveAllListeners();
+        elbows.onValueChanged.AddListener((int i) => ChangeDualPart(i, randomizer.allGender.elbow_Attachment_Left, randomizer.allGender.elbow_Attachment_Right));
+        elbows.AddOptions(randomizer.allGender.elbow_Attachment_Left.Select(x => $"Налокотники {randomizer.allGender.elbow_Attachment_Left.IndexOf(x)}").ToList());
+        
+        hipsAttach.onValueChanged.RemoveAllListeners();
+        hipsAttach.onValueChanged.AddListener((int i) => ChangePart(i, randomizer.allGender.hips_Attachment));
+        hipsAttach.AddOptions(randomizer.allGender.hips_Attachment.Select(x => $"Разное {randomizer.allGender.hips_Attachment.IndexOf(x)}").ToList());
+        
+        knees.onValueChanged.RemoveAllListeners();
+        knees.onValueChanged.AddListener((int i) => ChangeDualPart(i, randomizer.allGender.knee_Attachement_Left, randomizer.allGender.knee_Attachement_Right));
+        knees.AddOptions(randomizer.allGender.knee_Attachement_Left.Select(x => $"Наколеники {randomizer.allGender.knee_Attachement_Left.IndexOf(x)}").ToList());
     }
 
     public void UpdateCharacter(Gender gender)
@@ -150,6 +195,36 @@ public class CharacterCreator : MonoBehaviour
         }
     }
 
+    public void EnableHelmet(int index, List<GameObject> collection, List<GameObject> heads, List<GameObject> hair)
+    {
+        if (index == 0)
+        {
+            heads[0].SetActive(true);
+            hair[0].SetActive(true);
+            
+            headDropdown.enabled = true;
+            hairDropdown.enabled = true;
+        }
+        else
+        {
+            heads[headDropdown.value].SetActive(false);
+            hair[hairDropdown.value].SetActive(false);
+            
+            headDropdown.value = 0;
+            hairDropdown.value = 0;
+            headDropdown.enabled = false;
+            hairDropdown.enabled = false;
+        }
+        
+        
+        foreach (GameObject g in randomizer.enabledObjects.FindAll(x => collection.Contains(x)))
+        {
+            g.SetActive(false);
+        }
+
+        if (index != 0) randomizer.ActivateItem(collection[index-1]);
+        else collection[index].SetActive(false);
+    }
     public void ChangePart(int index, List<GameObject> collection)
     {
         foreach (GameObject g in randomizer.enabledObjects.FindAll(x => collection.Contains(x)))
@@ -185,5 +260,82 @@ public class CharacterCreator : MonoBehaviour
                 UpdateCharacter(this.gender);
                 break;
         }
+    }
+
+
+
+    public void SaveCharacter()
+    {
+        CharacterSkin characterSkin = new CharacterSkin((int)gender, headDropdown.value, hairDropdown.value,
+            torsoDropdown.value, upperArmDropdown.value, lowerArmDropdown.value, handDropdown.value,
+            hipsDropdown.value, legsDropdown.value, helmet.value - 1, backAttach.value,
+            shoulders.value, elbows.value, hipsAttach.value, knees.value);
+        
+        restCharacter.PostCharacter(characterSkin);
+        restCharacter.GetCharacter();
+    }
+}
+
+[Serializable]
+public class CharacterList
+{
+    public List<Character> characters;
+}
+
+[Serializable]
+public class Character
+{
+    public string character_uuid;
+    public int level;
+    public int money;
+    public string owner;
+    public CharacterSkin skin;
+
+    public Character(string characterUuid, int level, int money, string inventory, string owner, CharacterSkin skin)
+    {
+        character_uuid = characterUuid;
+        this.level = level;
+        this.money = money;
+        this.owner = owner;
+        this.skin = skin;
+    }
+}
+
+[Serializable]
+public class CharacterSkin
+{
+    public int leg;
+    public int hair;
+    public int hand;
+    public int head;
+    public int hips;
+    public int knee;
+    public int elbow;
+    public int torso;
+    public int gender;
+    public int helmet;
+    public int armLower;
+    public int armUpper;
+    public int backAttachment;
+    public int hipsAttachment;
+    public int shoulderAttachment;
+
+    public CharacterSkin(int gender, int head, int hair, int torso, int armUpper, int armLower, int hand, int hips, int leg, int helmet, int backAttachment, int shoulderAttachment, int elbow, int hipsAttachment, int knee)
+    {
+        this.gender = gender;
+        this.head = head;
+        this.hair = hair;
+        this.torso = torso;
+        this.armUpper = armUpper;
+        this.armLower = armLower;
+        this.hand = hand;
+        this.hips = hips;
+        this.leg = leg;
+        this.helmet = helmet;
+        this.backAttachment = backAttachment;
+        this.shoulderAttachment = shoulderAttachment;
+        this.elbow = elbow;
+        this.hipsAttachment = hipsAttachment;
+        this.knee = knee;
     }
 }

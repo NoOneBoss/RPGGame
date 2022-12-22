@@ -8,6 +8,7 @@ public class PlayerCharacter
 {
     public static string token;
     public static User user;
+    public static CharacterList characterList;
 }
 
 [Serializable]

@@ -1,10 +1,13 @@
 ﻿// character randomizer version 1.30
+
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace PsychoticLab
 {
-    public enum Gender { Male, Female }
+    public enum Gender : int { Male, Female }
     public enum Race { Human, Elf }
     public enum SkinColor { White, Brown, Black, Elf }
     public enum Elements {  Yes, No }
@@ -74,6 +77,27 @@ namespace PsychoticLab
         [HideInInspector]
         public CharacterObjectListsAllGender allGender;
 
+        private void Update()
+        {
+            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            {
+                transform.rotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y + 1,
+                    transform.eulerAngles.z);
+            }
+
+            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            {
+                transform.rotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y - 1,
+                    transform.eulerAngles.z);
+            }
+
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (scroll != 0)
+            {
+                transform.rotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y + scroll * 100,
+                    transform.eulerAngles.z);
+            }
+        }
 
         private void Start()
         {
@@ -94,8 +118,7 @@ namespace PsychoticLab
 
             // set default male character
             ActivateItem(male.headAllElements[0]);
-            ActivateItem(male.eyebrow[0]);
-            ActivateItem(male.facialHair[0]);
+            ActivateItem(allGender.all_Hair[0]);
             ActivateItem(male.torso[0]);
             ActivateItem(male.arm_Upper_Right[0]);
             ActivateItem(male.arm_Upper_Left[0]);
@@ -108,9 +131,9 @@ namespace PsychoticLab
             ActivateItem(male.leg_Left[0]);
 
 
-            GetComponent<CharacterCreator>().LoadDropDowns(Gender.Male);
-            if (repeatOnPlay)
-                InvokeRepeating("Randomize", shuffleSpeed, shuffleSpeed);
+            if(GetComponent<CharacterCreator>() != null) GetComponent<CharacterCreator>().LoadDropDowns(Gender.Male);
+            if(GetComponent<CharacterLoader>() != null) GetComponent<CharacterLoader>().LoadCharacter();
+            
         }
         
         public void Randomize()
@@ -137,6 +160,7 @@ namespace PsychoticLab
                 race = Race.Elf;
             if (!GetPercent(50))
                 elements = Elements.No;
+            if(GetComponent<CharacterCreator>() != null) GetComponent<CharacterCreator>().LoadDropDowns(gender);
             
             int headCoveringRoll = Random.Range(0, 100);
             if (headCoveringRoll <= 33)
@@ -186,9 +210,6 @@ namespace PsychoticLab
                     
                     if (cog.eyebrow.Count != 0)
                         ActivateItem(cog.eyebrow[Random.Range(0, cog.eyebrow.Count)]);
-                    
-                    if (cog.facialHair.Count != 0 && facialHair == FacialHair.Yes && gender == Gender.Male && headCovering != HeadCovering.HeadCoverings_No_FacialHair)
-                        ActivateItem(cog.facialHair[Random.Range(0, cog.facialHair.Count)]);
 
                     switch (headCovering)
                     {
@@ -390,7 +411,6 @@ namespace PsychoticLab
             BuildList(male.headAllElements, "Male_Head_All_Elements");
             BuildList(male.headNoElements, "Male_Head_No_Elements");
             BuildList(male.eyebrow, "Male_01_Eyebrows");
-            BuildList(male.facialHair, "Male_02_FacialHair");
             BuildList(male.torso, "Male_03_Torso");
             BuildList(male.arm_Upper_Right, "Male_04_Arm_Upper_Right");
             BuildList(male.arm_Upper_Left, "Male_05_Arm_Upper_Left");
@@ -406,7 +426,6 @@ namespace PsychoticLab
             BuildList(female.headAllElements, "Female_Head_All_Elements");
             BuildList(female.headNoElements, "Female_Head_No_Elements");
             BuildList(female.eyebrow, "Female_01_Eyebrows");
-            BuildList(female.facialHair, "Female_02_FacialHair");
             BuildList(female.torso, "Female_03_Torso");
             BuildList(female.arm_Upper_Right, "Female_04_Arm_Upper_Right");
             BuildList(female.arm_Upper_Left, "Female_05_Arm_Upper_Left");
@@ -486,7 +505,6 @@ namespace PsychoticLab
         public List<GameObject> headAllElements;
         public List<GameObject> headNoElements;
         public List<GameObject> eyebrow;
-        public List<GameObject> facialHair;
         public List<GameObject> torso;
         public List<GameObject> arm_Upper_Right;
         public List<GameObject> arm_Upper_Left;

@@ -1,13 +1,11 @@
 package ru.nooneboss.database.friends
 
-import ru.nooneboss.database.users.PlayerSession
 import ru.nooneboss.database.users.PostgresAuthController
 import java.util.*
 import kotlin.concurrent.schedule
 
 object StatusController {
     var sessionStatus = mutableListOf<SessionStatus>()
-    private val statusConnection = PlayerSession.datasource.connection
 
     fun setStatus(status: SessionStatus){
         sessionStatus.apply {
