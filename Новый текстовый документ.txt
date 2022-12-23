@@ -1,0 +1,799 @@
+create type status as enum ('MAIN_MENU', 'ARENA', 'NOT_IN_GAME');
+
+alter type status owner to postgres;
+
+create table users
+(
+    user_uuid         uuid        default gen_random_uuid()           not null
+        constraint users_pk
+            primary key,
+    login             varchar(50)                                     not null,
+    password          varchar(50)                                     not null,
+    role              varchar(10) default 'player'::character varying not null,
+    last_login        timestamp,
+    registration_time timestamp   default CURRENT_TIMESTAMP,
+    last_status       varchar(15) default 'NOT_IN_GAME'::character varying
+);
+
+alter table users
+    owner to postgres;
+
+grant insert, select, update (last_login, last_status) on users to rpgtraderauth;
+
+grant select (user_uuid), select (user_uuid, last_status), update (last_status) on users to rpgtraderplayer;
+
+create table chat
+(
+    sender     uuid                                       not null
+        constraint chat_users_null_fk
+            references users,
+    send_time  timestamp    default CURRENT_TIMESTAMP     not null,
+    message    varchar(100) default ''::character varying not null,
+    message_id uuid         default gen_random_uuid()     not null
+        constraint chat_pk
+            primary key
+        constraint chat_upk
+            unique
+);
+
+alter table chat
+    owner to postgres;
+
+grant insert, select on chat to rpgtraderplayer;
+
+create table friends
+(
+    first       uuid                                not null
+        constraint friends_users_null_fk
+            references users,
+    second      uuid                                not null
+        constraint friends_users_null_fk2
+            references users,
+    friend_date timestamp default CURRENT_TIMESTAMP not null
+);
+
+alter table friends
+    owner to postgres;
+
+grant delete, insert, select on friends to rpgtraderplayer;
+
+create table characters
+(
+    character_uuid uuid    default gen_random_uuid() not null
+        constraint characters_pk
+            primary key,
+    level          integer default 0                 not null,
+    money          integer default 0                 not null,
+    owner          uuid                              not null
+        constraint characters_users_null_fk
+            references users
+);
+
+alter table characters
+    owner to postgres;
+
+create table logs
+(
+    executor        uuid                                  not null
+        constraint logs_users_null_fk
+            references users,
+    character       uuid
+        constraint logs_characters_character_uuid_fk
+            references characters,
+    execution_time  timestamp   default CURRENT_TIMESTAMP not null,
+    action          varchar(100),
+    "ipAddress"     varchar(15) default 'Undefined'::character varying,
+    "isPersistence" boolean     default false             not null
+);
+
+alter table logs
+    owner to postgres;
+
+grant delete, insert, select on logs to rpgtraderlogs;
+
+grant insert, select, update (level, money) on characters to rpgtraderplayer;
+
+create table character_skins
+(
+    character_uuid uuid  not null
+        constraint character_skins_characters_null_fk
+            references characters,
+    skin           jsonb not null
+);
+
+alter table character_skins
+    owner to postgres;
+
+grant insert, select on character_skins to rpgtraderplayer;
+
+create table arena_states
+(
+    character_uuid        uuid
+        constraint arena_states_pk
+            unique
+        constraint arena_states_characters_null_fk
+            references characters,
+    health                smallint,
+    character_position    jsonb,
+    character_rotation    jsonb,
+    camera_position       jsonb,
+    camera_rotation       jsonb,
+    camera_pivot_rotation jsonb,
+    picked_up_items       text default ''::text not null
+);
+
+alter table arena_states
+    owner to postgres;
+
+grant delete, insert, select, update on arena_states to rpgtraderplayer;
+
+create table inventory
+(
+    item_uuid        uuid default gen_random_uuid() not null
+        constraint inventory_pk
+            primary key,
+    character_uuid   uuid
+        constraint inventory_characters_null_fk
+            references characters,
+    item_name        varchar,
+    item_description text,
+    item_category    varchar,
+    sprite_name      varchar
+);
+
+alter table inventory
+    owner to postgres;
+
+create view friendview(user_uuid, friend_uuid, user_name, friend_name, friend_date) as
+SELECT friends.first                            AS user_uuid,
+       friends.second                           AS friend_uuid,
+       (SELECT users.login AS user_name
+        FROM play.users
+        WHERE users.user_uuid = friends.first)  AS user_name,
+       (SELECT users.login AS friend_name
+        FROM play.users
+        WHERE users.user_uuid = friends.second) AS friend_name,
+       friends.friend_date
+FROM play.friends;
+
+alter table friendview
+    owner to postgres;
+
+grant select on friendview to rpgtraderplayer;
+
+create view characterview(character_uuid, level, money, owner, skin) as
+SELECT characters.character_uuid,
+       characters.level,
+       characters.money,
+       characters.owner,
+       (SELECT character_skins.skin
+        FROM play.character_skins
+        WHERE characters.character_uuid = character_skins.character_uuid) AS skin
+FROM play.characters;
+
+alter table characterview
+    owner to postgres;
+
+grant select on characterview to rpgtraderplayer;
+
+create function account_already_exist(checklogin character varying) returns boolean
+    language sql
+as
+$$select exists(select login from users where login = crypt_login(checkLogin))$$;
+
+alter function account_already_exist(varchar) owner to postgres;
+
+grant execute on function account_already_exist(varchar) to rpgtraderauth;
+
+create function digest(text, text) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function digest(text, text) owner to postgres;
+
+create function digest(bytea, text) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function digest(bytea, text) owner to postgres;
+
+create function hmac(text, text, text) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function hmac(text, text, text) owner to postgres;
+
+create function hmac(bytea, bytea, text) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function hmac(bytea, bytea, text) owner to postgres;
+
+create function crypt(text, text) returns text
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function crypt(text, text) owner to postgres;
+
+create function gen_salt(text) returns text
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function gen_salt(text) owner to postgres;
+
+create function gen_salt(text, integer) returns text
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function gen_salt(text, integer) owner to postgres;
+
+create function encrypt(bytea, bytea, text) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function encrypt(bytea, bytea, text) owner to postgres;
+
+create function decrypt(bytea, bytea, text) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function decrypt(bytea, bytea, text) owner to postgres;
+
+create function encrypt_iv(bytea, bytea, bytea, text) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function encrypt_iv(bytea, bytea, bytea, text) owner to postgres;
+
+create function decrypt_iv(bytea, bytea, bytea, text) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function decrypt_iv(bytea, bytea, bytea, text) owner to postgres;
+
+create function gen_random_bytes(integer) returns bytea
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function gen_random_bytes(integer) owner to postgres;
+
+create function gen_random_uuid() returns uuid
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function gen_random_uuid() owner to postgres;
+
+create function pgp_sym_encrypt(text, text) returns bytea
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_sym_encrypt(text, text) owner to postgres;
+
+create function pgp_sym_encrypt_bytea(bytea, text) returns bytea
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_sym_encrypt_bytea(bytea, text) owner to postgres;
+
+create function pgp_sym_encrypt(text, text, text) returns bytea
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_sym_encrypt(text, text, text) owner to postgres;
+
+create function pgp_sym_encrypt_bytea(bytea, text, text) returns bytea
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_sym_encrypt_bytea(bytea, text, text) owner to postgres;
+
+create function pgp_sym_decrypt(bytea, text) returns text
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_sym_decrypt(bytea, text) owner to postgres;
+
+create function pgp_sym_decrypt_bytea(bytea, text) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_sym_decrypt_bytea(bytea, text) owner to postgres;
+
+create function pgp_sym_decrypt(bytea, text, text) returns text
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_sym_decrypt(bytea, text, text) owner to postgres;
+
+create function pgp_sym_decrypt_bytea(bytea, text, text) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_sym_decrypt_bytea(bytea, text, text) owner to postgres;
+
+create function pgp_pub_encrypt(text, bytea) returns bytea
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_pub_encrypt(text, bytea) owner to postgres;
+
+create function pgp_pub_encrypt_bytea(bytea, bytea) returns bytea
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_pub_encrypt_bytea(bytea, bytea) owner to postgres;
+
+create function pgp_pub_encrypt(text, bytea, text) returns bytea
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_pub_encrypt(text, bytea, text) owner to postgres;
+
+create function pgp_pub_encrypt_bytea(bytea, bytea, text) returns bytea
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_pub_encrypt_bytea(bytea, bytea, text) owner to postgres;
+
+create function pgp_pub_decrypt(bytea, bytea) returns text
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_pub_decrypt(bytea, bytea) owner to postgres;
+
+create function pgp_pub_decrypt_bytea(bytea, bytea) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_pub_decrypt_bytea(bytea, bytea) owner to postgres;
+
+create function pgp_pub_decrypt(bytea, bytea, text) returns text
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_pub_decrypt(bytea, bytea, text) owner to postgres;
+
+create function pgp_pub_decrypt_bytea(bytea, bytea, text) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_pub_decrypt_bytea(bytea, bytea, text) owner to postgres;
+
+create function pgp_pub_decrypt(bytea, bytea, text, text) returns text
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_pub_decrypt(bytea, bytea, text, text) owner to postgres;
+
+create function pgp_pub_decrypt_bytea(bytea, bytea, text, text) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_pub_decrypt_bytea(bytea, bytea, text, text) owner to postgres;
+
+create function pgp_key_id(bytea) returns text
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function pgp_key_id(bytea) owner to postgres;
+
+create function armor(bytea) returns text
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function armor(bytea) owner to postgres;
+
+create function armor(bytea, text[], text[]) returns text
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function armor(bytea, text[], text[]) owner to postgres;
+
+create function dearmor(text) returns bytea
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+$$;
+
+alter function dearmor(text) owner to postgres;
+
+create function pgp_armor_headers(text, out key text, out value text) returns setof setof record
+    immutable
+    strict
+    parallel safe
+    language c
+as
+$$
+begin
+-- missing source code
+end;
+
+$$;
+
+alter function pgp_armor_headers(text, out text, out text) owner to postgres;
+
+create function auth(inputlogin character varying, inputpassword character varying) returns boolean
+    language plpgsql
+as
+$$
+    DECLARE loginVar boolean;
+    BEGIN
+        select (select exists(select login from users where login = inputLogin and password = crypt_password(inputPassword))) into loginVar;
+        if loginVar then update users set last_login = now() where login = inputLogin; end if;
+        return loginVar;
+    END
+    $$;
+
+alter function auth(varchar, varchar) owner to postgres;
+
+grant execute on function auth(varchar, varchar) to rpgtraderauth;
+
+create function crypt_password(password character varying, login character varying) returns character varying
+    language sql
+as
+$$select crypt(password, '$1$pNlHbFsc')$$;
+
+alter function crypt_password(varchar, varchar) owner to postgres;
+
+grant execute on function crypt_password(varchar, varchar) to rpgtraderauth;
+
+create procedure register(IN inputlogin character varying, IN inputpassword character varying)
+    language plpgsql
+as
+$$
+    BEGIN
+        insert into users(login, password) values(inputLogin, crypt_password(inputPassword, inputLogin));
+        --execute format('create role %I with login password ''%I''', inputLogin, inputPassword);
+        --execute format('grant rpgtraderplayer to %I', inputLogin);
+    END
+    $$;
+
+alter procedure register(varchar, varchar) owner to postgres;
+
+create procedure log(IN executor uuid, IN charactor uuid, IN action character varying, IN ipaddress character varying, IN ispersistance boolean)
+    language plpgsql
+as
+$$
+    BEGIN
+        insert into logs(executor, character,action, "ipAddress", "isPersistence")
+        values(executor, charactor, action, ipAddress, isPersistance);
+    END
+    $$;
+
+alter procedure log(uuid, uuid, varchar, varchar, boolean) owner to postgres;
+
+create function crypt_password(password character varying) returns character varying
+    language sql
+as
+$$select crypt(password, '$1$pNlHbFsc')$$;
+
+alter function crypt_password(varchar) owner to postgres;
+
+create function crypt_login(login character varying) returns character varying
+    language sql
+as
+$$select crypt(login, '$1$p214sdSa')$$;
+
+alter function crypt_login(varchar) owner to postgres;
+
+create procedure createcharacter(IN uuid, IN jsonb)
+    language plpgsql
+as
+$$
+begin
+    insert into characters(owner) values ($1);
+    insert into character_skins(character_uuid, skin) values ((select character_uuid from characters where owner = $1), $2);
+end;
+$$;
+
+alter procedure createcharacter(uuid, jsonb) owner to postgres;
+
+create procedure savecharacter(IN uuid, IN integer, IN integer)
+    language plpgsql
+as
+$$
+begin
+    update characters set level = $2, money = $3 where character_uuid = $1;
+end;
+$$;
+
+alter procedure savecharacter(uuid, integer, integer) owner to postgres;
+
+create procedure createcharacter(IN uuid, IN uuid, IN jsonb)
+    language plpgsql
+as
+$$
+begin
+    insert into characters(character_uuid,owner) values ($1,$2);
+    insert into character_skins(character_uuid, skin) values ($1, $3);
+end;
+$$;
+
+alter procedure createcharacter(uuid, uuid, jsonb) owner to postgres;
+
+create function remove_dead_save() returns trigger
+    language plpgsql
+as
+$$
+ begin
+    if (select health from arena_states where character_uuid = new.character_uuid) <= 0 then
+        delete from arena_states where health <= 0 and character_uuid = new.character_uuid;
+    end if;
+
+    return null;
+ end
+ $$;
+
+alter function remove_dead_save() owner to postgres;
+
+create trigger remove_dead_saves
+    after insert or update
+    on arena_states
+    for each row
+execute procedure remove_dead_save();
+
