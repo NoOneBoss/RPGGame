@@ -171,6 +171,7 @@ COPY play.arena_states (character_uuid, health, character_position, character_ro
 30b2095f-20b9-4ca0-8bda-2def86108f72	70	{"x": -6.621641159057617, "y": 0.031106948852539062, "z": 14.872697830200195}	{"x": 0.0, "y": 280.3568115234375, "z": 0.0}	{"x": -6.619626522064209, "y": 0.030920982360839844, "z": 14.872597694396973}	{"x": 0.0, "y": 113.13398742675781, "z": 0.0}	{"x": 325.0, "y": 113.13398742675781, "z": 0.0}	
 c459e00e-8016-4ad3-9812-9cdc1acd7b21	100	{"x": -8.220800399780273, "y": 0.16675567626953125, "z": 14.527183532714844}	{"x": 0.0, "y": 209.25010681152344, "z": 0.0}	{"x": -8.22079849243164, "y": 0.17067813873291016, "z": 14.527185440063477}	{"x": 0.0, "y": 199.6179962158203, "z": 0.0}	{"x": 23.585208892822266, "y": 199.61798095703125, "z": -0.00000046579665990975627}	ItemBag, XPOrb, GoldBag, ItemBag (1), ItemBag2, ItemBag1
 e3f14673-a4b8-474a-97bd-7ed56935a4a6	90	{"x": -7.7896246910095215, "y": 0.05894279479980469, "z": 15.759645462036133}	{"x": 0.0, "y": 214.20449829101562, "z": 0.0}	{"x": -7.789623737335205, "y": 0.0628652572631836, "z": 15.759645462036133}	{"x": 0.0, "y": 39.3720588684082, "z": 0.0}	{"x": 13.643803596496582, "y": 39.37206268310547, "z": 0.0}	ItemBag1, XPOrb, ItemBag2, GoldBag
+211b5a05-12d9-4ee7-ac67-8c5ee73bf084	80	{"x": -9.372800827026367, "y": 0.25260353088378906, "z": 15.192652702331543}	{"x": 0.0, "y": 304.990234375, "z": 0.0}	{"x": -9.282855033874512, "y": 0.24665451049804688, "z": 15.08544921875}	{"x": 0.0, "y": 330.6595458984375, "z": 0.0}	{"x": 16.30272674560547, "y": 330.6595458984375, "z": -0.0000004447701087428868}	, ItemBag1, XPOrb, GoldBag, ItemBag2
 978fb330-9d3d-4b25-bdbc-8d19b542434c	20	{"x": -9.374170303344727, "y": 0.13823890686035156, "z": 17.473665237426758}	{"x": 0.0, "y": 146.9792938232422, "z": 0.0}	{"x": -9.390252113342285, "y": 0.13924789428710938, "z": 17.48027229309082}	{"x": 0.0, "y": 14.47544002532959, "z": 0.0}	{"x": 325.0, "y": 14.47544002532959, "z": -0.0000005211325628806662}	, GoldBag, XPOrb, ItemBag
 \.
 
@@ -190,6 +191,7 @@ fc1faca5-8605-4a7d-8df1-f264b233de4c	{"leg": 0, "hair": 0, "hand": 0, "head": 2,
 f3e2accd-0daa-4a42-b5a2-40434c3681b5	{"leg": 0, "hair": 0, "hand": 0, "head": 0, "hips": 0, "knee": 0, "elbow": 0, "torso": 0, "gender": 0, "helmet": 2, "armLower": 0, "armUpper": 0, "backAttachment": 3, "hipsAttachment": 2, "shoulderAttachment": 2}
 c459e00e-8016-4ad3-9812-9cdc1acd7b21	{"leg": 0, "hair": 0, "hand": 0, "head": 0, "hips": 0, "knee": 0, "elbow": 0, "torso": 0, "gender": 1, "helmet": 2, "armLower": 0, "armUpper": 0, "backAttachment": 0, "hipsAttachment": 0, "shoulderAttachment": 0}
 e3f14673-a4b8-474a-97bd-7ed56935a4a6	{"leg": 4, "hair": 0, "hand": 2, "head": 0, "hips": 5, "knee": 2, "elbow": 2, "torso": 3, "gender": 0, "helmet": 4, "armLower": 2, "armUpper": 3, "backAttachment": 5, "hipsAttachment": 2, "shoulderAttachment": 2}
+211b5a05-12d9-4ee7-ac67-8c5ee73bf084	{"leg": 4, "hair": 0, "hand": 4, "head": 0, "hips": 5, "knee": 2, "elbow": 3, "torso": 4, "gender": 0, "helmet": 4, "armLower": 3, "armUpper": 2, "backAttachment": 3, "hipsAttachment": 1, "shoulderAttachment": 2}
 \.
 
 
@@ -208,6 +210,7 @@ fc1faca5-8605-4a7d-8df1-f264b233de4c	0	0	e65034d2-472f-4019-9cf3-51e1033ce847
 f3e2accd-0daa-4a42-b5a2-40434c3681b5	0	0	01d7a7c0-e15f-4f99-a8f6-f19b45972ef3
 c459e00e-8016-4ad3-9812-9cdc1acd7b21	10	20	daaae747-0b15-4593-8234-e6b0b9dced6b
 e3f14673-a4b8-474a-97bd-7ed56935a4a6	5	10	6938adf3-f783-4b07-a9d4-550dd299bcec
+211b5a05-12d9-4ee7-ac67-8c5ee73bf084	5	10	22ff5710-7a39-446e-b23c-fe65bd66e3ef
 \.
 
 
@@ -312,6 +315,8 @@ f153040f-e6c6-4bf1-b208-0823393b3adb	2022-12-17 19:54:01.663	123' DELETE * from 
 07bda83f-1011-4c56-a5e9-0dc5651cecec	2022-12-23 16:16:50.841	так так так	83fffa0e-b7b8-49e2-b8cb-1e4f3445b1f0
 d469027f-8ee9-4a41-8e08-5202f7ef57ae	2022-12-23 16:18:30.837	реально так так так	afef42c5-1db1-4304-9de0-5a38a8375efe
 d469027f-8ee9-4a41-8e08-5202f7ef57ae	2022-12-23 16:18:30.838	за аниме и двор стреля в упор	609cd381-3fb8-4808-a96d-e1bea5af65cc
+22ff5710-7a39-446e-b23c-fe65bd66e3ef	2022-12-24 01:35:16.408	крутой чат	e5c950f2-9aaa-413e-91f6-e7d1341bc02c
+22ff5710-7a39-446e-b23c-fe65bd66e3ef	2022-12-24 01:35:16.429	курсовая работа крутая тоже	d869d057-289e-46b7-8aaf-30301bc7b208
 \.
 
 
@@ -328,6 +333,8 @@ d469027f-8ee9-4a41-8e08-5202f7ef57ae	1a46712b-66ad-485f-beca-4cf5060b01df	2022-1
 d469027f-8ee9-4a41-8e08-5202f7ef57ae	887cb12f-1239-420f-9b43-0af75764446d	2022-12-23 16:21:07.224967
 d469027f-8ee9-4a41-8e08-5202f7ef57ae	75af33fb-4c78-4199-946d-17723604c948	2022-12-23 16:21:10.685292
 d469027f-8ee9-4a41-8e08-5202f7ef57ae	8698f040-5521-4baf-9652-7b45b2a1faac	2022-12-23 16:21:13.868809
+daaae747-0b15-4593-8234-e6b0b9dced6b	d469027f-8ee9-4a41-8e08-5202f7ef57ae	2022-12-24 01:09:13.524445
+22ff5710-7a39-446e-b23c-fe65bd66e3ef	d469027f-8ee9-4a41-8e08-5202f7ef57ae	2022-12-24 01:34:13.492435
 \.
 
 
@@ -341,6 +348,8 @@ ce23e211-9176-4fa2-8f5e-823821584796	c459e00e-8016-4ad3-9812-9cdc1acd7b21	Кру
 ce0c44a3-0f9a-436b-8b0d-d926b1a88e74	c459e00e-8016-4ad3-9812-9cdc1acd7b21	Прочный щит	Самый прочный щит в мире.	weapons	shield_42
 26695a07-63f2-486a-ac06-4f429b0ef021	e3f14673-a4b8-474a-97bd-7ed56935a4a6	Прочный щит	Самый прочный щит в мире.	weapons	shield_42
 876d81a8-ee33-4af4-820b-d943612bb6d7	e3f14673-a4b8-474a-97bd-7ed56935a4a6	Крутой щит	Самый крутой щит в мире.	weapons	shield_44
+1e3e5834-4086-42f9-a30f-d7de07c56f7c	211b5a05-12d9-4ee7-ac67-8c5ee73bf084	Прочный щит	Самый прочный щит в мире.	weapons	shield_42
+165ac7aa-5162-4ef1-9272-7c8e765e1ad1	211b5a05-12d9-4ee7-ac67-8c5ee73bf084	Крутой щит	Самый крутой щит в мире.	weapons	shield_44
 \.
 
 
@@ -664,6 +673,18 @@ daaae747-0b15-4593-8234-e6b0b9dced6b	\N	2022-12-23 22:17:28.701276	Authenticate	
 daaae747-0b15-4593-8234-e6b0b9dced6b	\N	2022-12-23 22:18:55.486176	Authenticate	127.0.0.1	t
 6938adf3-f783-4b07-a9d4-550dd299bcec	\N	2022-12-23 22:36:09.617412	Authenticate	127.0.0.1	t
 6938adf3-f783-4b07-a9d4-550dd299bcec	e3f14673-a4b8-474a-97bd-7ed56935a4a6	2022-12-23 22:36:40.215593	Created character	127.0.0.1	t
+d469027f-8ee9-4a41-8e08-5202f7ef57ae	\N	2022-12-24 01:08:40.031041	Failed login	127.0.0.1	t
+d469027f-8ee9-4a41-8e08-5202f7ef57ae	\N	2022-12-24 01:08:45.351763	Failed login	127.0.0.1	t
+d469027f-8ee9-4a41-8e08-5202f7ef57ae	\N	2022-12-24 01:08:48.273214	Failed login	127.0.0.1	t
+daaae747-0b15-4593-8234-e6b0b9dced6b	\N	2022-12-24 01:08:57.052509	Failed login	127.0.0.1	t
+daaae747-0b15-4593-8234-e6b0b9dced6b	\N	2022-12-24 01:08:59.464223	Authenticate	127.0.0.1	t
+22ff5710-7a39-446e-b23c-fe65bd66e3ef	\N	2022-12-24 01:32:31.439821	Registered	127.0.0.1	f
+22ff5710-7a39-446e-b23c-fe65bd66e3ef	\N	2022-12-24 01:32:33.141381	Authenticate	127.0.0.1	t
+22ff5710-7a39-446e-b23c-fe65bd66e3ef	211b5a05-12d9-4ee7-ac67-8c5ee73bf084	2022-12-24 01:33:00.575212	Created character	127.0.0.1	t
+22ff5710-7a39-446e-b23c-fe65bd66e3ef	\N	2022-12-24 01:33:40.833667	Sent message: 'крутой чат'	127.0.0.1	f
+22ff5710-7a39-446e-b23c-fe65bd66e3ef	\N	2022-12-24 01:33:49.142627	Sent message: 'курсовая работа крутая тоже'	127.0.0.1	f
+22ff5710-7a39-446e-b23c-fe65bd66e3ef	211b5a05-12d9-4ee7-ac67-8c5ee73bf084	2022-12-24 01:35:11.204557	Created character	127.0.0.1	t
+22ff5710-7a39-446e-b23c-fe65bd66e3ef	211b5a05-12d9-4ee7-ac67-8c5ee73bf084	2022-12-24 01:35:12.83179	Created character	127.0.0.1	t
 \.
 
 
@@ -672,6 +693,7 @@ daaae747-0b15-4593-8234-e6b0b9dced6b	\N	2022-12-23 22:18:55.486176	Authenticate	
 --
 
 COPY play.users (user_uuid, login, password, role, last_login, registration_time, last_status) FROM stdin;
+22ff5710-7a39-446e-b23c-fe65bd66e3ef	fedoskokos123	$1$pNlHbFsc$4MZYs6HJEJ5PON..t07qc.	player	2022-12-24 02:30:52.162951	2022-12-24 01:32:31.432324	NOT_IN_GAME
 6938adf3-f783-4b07-a9d4-550dd299bcec	dreamgod	$1$pNlHbFsc$pX3hHHNl7jHzLVYj1wcjH.	player	2022-12-23 22:37:48.716572	2022-12-23 22:36:05.882208	NOT_IN_GAME
 968af0c6-957e-4e6e-bf30-22282660467b	bossihasd	$1$pNlHbFsc$qLk0lzrWpyQ.dO/MlkYe51	player	2022-12-19 23:55:06.553229	2022-12-03 17:14:28.888011	NOT_IN_GAME
 8698f040-5521-4baf-9652-7b45b2a1faac	dreambeast	$1$pNlHbFsc$qLk0lzrWpyQ.dO/MlkYe51	player	2022-12-19 19:52:40.398601	2022-12-09 20:29:49.3803	NOT_IN_GAME
@@ -689,7 +711,7 @@ f153040f-e6c6-4bf1-b208-0823393b3adb	normilized	$1$pNlHbFsc$hDhYj3YtnQw81ek6v/IX
 e65034d2-472f-4019-9cf3-51e1033ce847	testqwe2	$1$pNlHbFsc$.tIiVO39HkhMERj2GGOCp0	player	2022-12-23 19:33:07.338742	2022-12-23 19:32:36.835282	NOT_IN_GAME
 01d7a7c0-e15f-4f99-a8f6-f19b45972ef3	vacuntogod	$1$pNlHbFsc$.tIiVO39HkhMERj2GGOCp0	player	2022-12-23 19:36:11.862674	2022-12-23 19:33:28.608856	NOT_IN_GAME
 6b39e2a7-a5cc-47d2-837c-8cda4ee10b6b	testqwer	$1$pNlHbFsc$eEW47W2lqiyAsK2mcEOo0/	player	\N	2022-12-23 19:32:05.540823	NOT_IN_GAME
-daaae747-0b15-4593-8234-e6b0b9dced6b	dota2dota2	$1$pNlHbFsc$wX3q45ZImhXBkzQFX84NI.	player	2022-12-23 22:19:22.422164	2022-12-23 20:16:14.485494	MAIN_MENU
+daaae747-0b15-4593-8234-e6b0b9dced6b	dota2dota2	$1$pNlHbFsc$wX3q45ZImhXBkzQFX84NI.	player	2022-12-24 01:32:07.527875	2022-12-23 20:16:14.485494	NOT_IN_GAME
 \.
 
 
