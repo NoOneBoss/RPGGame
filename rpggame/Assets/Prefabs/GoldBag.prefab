@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 6366911897414374344}
   - component: {fileID: 9205120052624844546}
   - component: {fileID: 7493884842272061411}
+  - component: {fileID: 2600933970128825598}
   m_Layer: 0
   m_Name: GoldBag
-  m_TagString: Untagged
+  m_TagString: MoneyBag
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7259762582929065687}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -97,3 +98,17 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.0036972507, y: 0.004261135, z: 0.0029615895}
   m_Center: {x: 0.00009469059, y: 3.492459e-10, z: 0.0014807945}
+--- !u!114 &2600933970128825598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7259762582929065687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed6eeb271d72479d882d9a547f585b88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupType: 0
+  amount: 10

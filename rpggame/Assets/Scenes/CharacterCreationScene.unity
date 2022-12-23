@@ -7479,6 +7479,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: PostProcessing
       objectReference: {fileID: 0}
+    - target: {fileID: 2817054837250668550, guid: 952d4e409a4b27146a56492e9bd3b25f,
+        type: 3}
+      propertyPath: sharedProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: a7658d7d86d3bea42901725cb8ffcdc9,
+        type: 2}
     - target: {fileID: 2817054837250668551, guid: 952d4e409a4b27146a56492e9bd3b25f,
         type: 3}
       propertyPath: m_RootOrder

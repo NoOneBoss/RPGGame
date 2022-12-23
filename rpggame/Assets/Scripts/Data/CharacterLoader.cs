@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CharacterLoader : MonoBehaviour
 {
-    public int characterIndex = 0;
+    public static int characterIndex = 0;
     public CharacterRandomizer characterRandomizer;
 
     public void LoadCharacter()

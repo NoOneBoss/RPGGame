@@ -2,6 +2,7 @@ package ru.nooneboss.database.characters
 
 import com.google.gson.GsonBuilder
 import ru.nooneboss.database.users.PlayerSession
+import ru.nooneboss.plugins.CharactersUpgrader
 import java.util.*
 
 object CharacterController {
@@ -13,9 +14,18 @@ object CharacterController {
         return characters.filter { it.owner == uuid }
     }
 
-    fun addCharacter(owner: UUID, skin: String){
+    fun updateCharacterStats(charactersUpgrader: CharactersUpgrader){
+        val statement = characterConnection.prepareStatement("UPDATE rpgtrader.play.characters SET level = level + ?, money = money + ? where character_uuid = ?")
+        statement.setInt(1,charactersUpgrader.level)
+        statement.setInt(2,charactersUpgrader.money)
+        statement.setObject(3,charactersUpgrader.character_uuid)
+
+        statement.execute()
+    }
+
+    fun addCharacter(owner: UUID, skin: String, character_uuid: UUID){
         val statement = characterConnection.prepareStatement("call rpgtrader.play.createCharacter(?,?,?::jsonb)")
-        statement.setObject(1, UUID.randomUUID())
+        statement.setObject(1, character_uuid)
         statement.setObject(2, owner)
         statement.setString(3, skin)
 

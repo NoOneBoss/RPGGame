@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Friend
   - Hittable
+  - XPOrb
+  - ItemBag
+  - MoneyBag
   layers:
   - Default
   - TransparentFX

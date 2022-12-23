@@ -21,6 +21,8 @@ import ru.nooneboss.database.friends.FriendController
 import ru.nooneboss.database.friends.FriendReq
 import ru.nooneboss.database.friends.SessionStatus
 import ru.nooneboss.database.friends.StatusController
+import ru.nooneboss.database.invenory.InventoryController
+import ru.nooneboss.database.invenory.Item
 import ru.nooneboss.database.logs.LogMessage
 import ru.nooneboss.database.logs.PostgresLogsController
 import ru.nooneboss.database.users.PlayerSession
@@ -153,20 +155,58 @@ fun Application.configureRouting() {
 
                 val characterSkin = call.receive<String>()
 
-                CharacterController.addCharacter(user.user_uuid, characterSkin)
+                val uuid = UUID.randomUUID()
+                CharacterController.addCharacter(user.user_uuid, characterSkin,uuid)
                 call.respondText("Character created", status = HttpStatusCode.OK)
                 println("[LOG] User ${user.user_uuid} created character.")
-                PostgresLogsController.log(LogMessage(user.user_uuid, null, "Created character", call.request.origin.remoteHost, true))
+                PostgresLogsController.log(LogMessage(user.user_uuid, uuid, "Created character", call.request.origin.remoteHost, true))
             }
 
+            get<ArenaStatesCharacters> {
+                val user = call.principal<User>() ?: return@get call.respondText("Unauthorized", status = HttpStatusCode.Unauthorized)
+
+
+                try{
+                    call.respondText(GsonBuilder().create().toJson(ArenaController.getArenaState(it.uuid)), status = HttpStatusCode.OK)
+                }
+                catch (e: Exception){
+                    call.respondText("null", status = HttpStatusCode.NotFound)
+                }
+            }
 
             post("/arenastates/update"){
                 val user = call.principal<User>() ?: return@post call.respondText("Unauthorized", status = HttpStatusCode.Unauthorized)
 
                 val arenaSave = call.receive<ArenaSave>()
-                println(GsonBuilder().create().toJson(arenaSave))
                 ArenaController.updateArenaState(arenaSave)
                 call.respondText("Arena state updated", status = HttpStatusCode.OK)
+            }
+
+            post("/characters/updatestats") {
+                val user = call.principal<User>() ?: return@post call.respondText("Unauthorized", status = HttpStatusCode.Unauthorized)
+                val charactersUpgrader = call.receive<CharactersUpgrader>()
+
+                CharacterController.updateCharacterStats(charactersUpgrader)
+            }
+
+            get<LocationInventory>{
+                val user = call.principal<User>() ?: return@get call.respondText("Unauthorized", status = HttpStatusCode.Unauthorized)
+
+                val inventory = Gson().toJson(InventoryController.getInventory(it.uuid))
+                call.respondText(inventory, status = HttpStatusCode.OK)
+                println("[LOG] User ${user.user_uuid} requested inventory ${inventory}.")
+            }
+
+            post("/inventory/add") {
+                val user = call.principal<User>() ?: return@post call.respondText("Unauthorized", status = HttpStatusCode.Unauthorized)
+
+                val item = call.receive<Item>()
+
+                println(GsonBuilder().create().toJson(item).toString())
+                InventoryController.addItem(item)
+                call.respondText("Item added", status = HttpStatusCode.OK)
+                println("[LOG] User ${user.user_uuid} added item ${item.item_uuid} to inventory.")
+                PostgresLogsController.log(LogMessage(user.user_uuid, item.character_uuid, "Created character", call.request.origin.remoteHost, true))
             }
 
         }
@@ -197,3 +237,13 @@ class LocationStatus(val uuid: UUID)
 @OptIn(KtorExperimentalLocationsAPI::class)
 @Location("/characters/{uuid}")
 class LocationCharacters(val uuid: UUID)
+
+class CharactersUpgrader(val character_uuid: UUID, val money : Int, val level: Int)
+
+@OptIn(KtorExperimentalLocationsAPI::class)
+@Location("/arenastates/{uuid}")
+class ArenaStatesCharacters(val uuid: UUID)
+
+@OptIn(KtorExperimentalLocationsAPI::class)
+@Location("/inventory/{uuid}")
+class LocationInventory(val uuid: UUID)

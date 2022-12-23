@@ -77,9 +77,11 @@ namespace PsychoticLab
         [HideInInspector]
         public CharacterObjectListsAllGender allGender;
 
+
+        public bool scrolled = true;
         private void Update()
         {
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            /*if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
             {
                 transform.rotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y + 1,
                     transform.eulerAngles.z);
@@ -89,8 +91,8 @@ namespace PsychoticLab
             {
                 transform.rotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y - 1,
                     transform.eulerAngles.z);
-            }
-
+            }*/
+            if(!scrolled) return;
             float scroll = Input.GetAxis("Mouse ScrollWheel");
             if (scroll != 0)
             {

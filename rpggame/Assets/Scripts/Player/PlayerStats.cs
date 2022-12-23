@@ -11,6 +11,7 @@ public class PlayerStats : MonoBehaviour
     
     public HealthBar healthBar;
     private AnimationHandler animationHandler;
+    public GameObject controller;
 
     public void Start()
     {
@@ -38,6 +39,7 @@ public class PlayerStats : MonoBehaviour
             healthBar.diedscreen.enabled = true;
             healthBar.diedscreen.gameObject.SetActive(true);
             StartCoroutine(Die());
+            controller.GetComponent<ArenaSaver>().InstantSave();
         }
     }
     

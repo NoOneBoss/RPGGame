@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -15,15 +16,41 @@ public class RESTRegister : MonoBehaviour
     private SceneNavigator sceneNavigator;
     [SerializeField] public String login;
     [SerializeField] public String password;
+    
+    private int iPasswordScore = 0;
+    public Slider slider;
+    public Gradient gradient;
+    public Image fill;
 
 
     private void Start()
     {
+        slider.maxValue = 10;
         sceneNavigator = GetComponent<SceneNavigator>();
     }
     
     public void Register()
     {
+        if(login == "" || password == "")
+        {
+            SceneNavigator.openErrorPanel(errorPanel, activeUI, "Вы не ввели логин/пароль!");
+            return;
+        }
+
+        if (login.Length < 8)
+        {
+            SceneNavigator.openErrorPanel(errorPanel, activeUI, "Минимальная длина логина - 8!");
+            return;
+        }
+
+        if (iPasswordScore <= 5)
+        {
+            SceneNavigator.openErrorPanel(errorPanel, activeUI, "Ваш пароль слишком слабый! Используйте разный регистр, цифры и спецсимволы!");
+            return;
+        }
+        
+        
+        
         StartCoroutine(SendRegisterRequest());
     }
 
@@ -71,5 +98,43 @@ public class RESTRegister : MonoBehaviour
     {
         get => password;
         set => password = value;
+    }
+    
+    public void calculatePasswordStrength() {
+        iPasswordScore = 0;
+        if (password.Length < 8)
+        {
+            iPasswordScore = 0;
+            return;
+        }
+        if (password.Length  >= 10) {
+            iPasswordScore += 2;
+        }
+        else {
+            iPasswordScore++;
+        }
+        Regex numRegex = new Regex("(?=.*[0-9]).*");
+        Regex lowRegex = new Regex("(?=.*[a-z]).*");
+        Regex upRegex = new Regex("(?=.*[A-Z]).*");
+        Regex specRegex = new Regex("(?=.*[~!@#$%^&*()_-]).*");
+        
+        if (numRegex.Matches(password).Count > 0) {
+            iPasswordScore += 2;
+        }
+        
+        if (lowRegex.Matches(password).Count > 0) {
+            iPasswordScore += 2;
+        }
+        
+        if (upRegex.Matches(password).Count > 0) {
+            iPasswordScore += 2;
+        }
+        
+        if (specRegex.Matches(password).Count > 0) {
+            iPasswordScore += 2;
+        }
+        
+        slider.value = iPasswordScore;
+        fill.color = gradient.Evaluate(slider.normalizedValue);
     }
 }

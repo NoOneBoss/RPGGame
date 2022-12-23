@@ -6,6 +6,7 @@ import io.ktor.server.netty.*
 import org.jetbrains.exposed.sql.Database
 import ru.nooneboss.database.chat.ChatController
 import ru.nooneboss.database.friends.StatusController
+import ru.nooneboss.database.logs.PostgresLogsController
 import ru.nooneboss.database.users.PlayerSession
 import ru.nooneboss.plugins.configureRouting
 import ru.nooneboss.plugins.configureSecurity
@@ -39,5 +40,6 @@ fun Application.module() {
 
         ChatController.forceSaveMessages()
         StatusController.forceSaveStatuses()
+        PostgresLogsController.removeLogs()
     }
 }

@@ -13,6 +13,11 @@ object PostgresLogsController {
         connection.schema = "play"
     }
 
+    fun removeLogs(){
+        val statement = connection.prepareStatement("DELETE FROM rpgtrader.play.logs WHERE (execution_time > now() - interval '1 day') and (\"isPersistence\" = false)")
+        statement.execute()
+    }
+
     fun log(logMessage: LogMessage){
         val statement = connection.prepareStatement("call rpgtrader.play.log(?, ?, ?, ?, ?)")
 
