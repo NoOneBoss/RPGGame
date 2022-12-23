@@ -1,0 +1,119 @@
+/*auth*/
+create role rpgtraderauth;
+grant connect on database rpgtrader to rpgtraderauth;
+grant usage on schema play to rpgtraderauth;
+grant select, insert on rpgtrader.play.users to rpgtraderauth;
+grant update(last_login, last_status) on rpgtrader.play.users to rpgtraderauth;
+alter role rpgtraderauth with login password 'CC?2Zxls70dBK{5vQ1@H}p3Ng';
+alter role rpgtraderauth createrole;
+
+
+create extension pgcrypto;
+create or replace function account_already_exist(checkLogin varchar) returns boolean as
+    'select exists(select login from users where login = crypt_login(checkLogin))' language sql;
+
+create or replace function crypt_password(password varchar) returns varchar as
+    'select crypt(password, ''$1$pNlHbFsc'')' language sql;
+create or replace function crypt_login(login varchar) returns varchar as
+    'select crypt(login, ''$1$p214sdSa'')' language sql;
+
+
+create or replace function auth(inputLogin varchar, inputPassword varchar) returns boolean as
+    $$
+    DECLARE loginVar boolean;
+    BEGIN
+        select (select exists(select login from users where login = inputLogin and password = crypt_password(inputPassword))) into loginVar;
+        if loginVar then update users set last_login = now() where login = inputLogin; end if;
+        return loginVar;
+    END
+    $$ language plpgsql;
+
+create or replace procedure register(inputLogin varchar, inputPassword varchar) as
+    $$
+    BEGIN
+        insert into users(login, password) values(inputLogin, crypt_password(inputPassword));
+    END
+    $$ language plpgsql;
+
+
+/*logs*/
+create role rpgtraderlogs;
+grant connect on database rpgtrader to rpgtraderlogs;
+grant usage on schema play to rpgtraderlogs;
+grant select,insert,delete on rpgtrader.play.logs to rpgtraderlogs;
+alter role rpgtraderlogs with login password 'r1D46d*?H7~*0*zwMeuNOy4T3';
+
+create or replace procedure log(executor uuid, charactor uuid, action varchar, ipAddress varchar(15), isPersistance boolean) as
+    $$
+    BEGIN
+        insert into logs(executor, character,action, "ipAddress", "isPersistence")
+        values(executor, charactor, action, ipAddress, isPersistance);
+    END
+    $$ language plpgsql;
+
+
+/*player*/
+create group rpgtraderplayer INHERIT;
+grant connect on database rpgtrader to rpgtraderplayer;
+grant usage on schema play to rpgtraderplayer;
+grant select on chat to rpgtraderplayer;
+grant select,insert,delete on friends to rpgtraderplayer;
+grant update(last_login, last_status) on rpgtrader.play.users to rpgtraderauth;
+grant select,insert on rpgtrader.play.characters to rpgtraderplayer;
+grant update(level,money) on characters to rpgtraderplayer;
+grant select,insert on character_skins to rpgtraderplayer;
+grant select,insert,update,delete on arena_states to rpgtraderplayer;
+grant select,insert on inventory to rpgtraderplayer;
+grant select on friendView to rpgtraderplayer;
+grant select on characterView to rpgtraderplayer;
+alter role rpgtraderplayer with login password 'nbL?f5HSzRDZLA||~f$#7cbO#';
+
+/*friends*/
+create or replace view friendView as
+    select first as user_uuid, second as friend_uuid,
+           (select login as user_name from users where user_uuid = friends.first),
+           (select login as friend_name from users where user_uuid = friends.second),
+           friend_date
+    from friends;
+
+create type status as enum('MAIN_MENU', 'ARENA', 'NOT_IN_GAME');
+
+select * from friendView;
+
+
+
+/*chararcters*/
+create or replace view characterView as
+    select character_uuid,level,money,owner,
+           (select skin from character_skins where characters.character_uuid = character_skins.character_uuid) as skin
+    from characters;
+
+select * from characterView;
+
+create or replace procedure createCharacter(uuid, uuid, jsonb) as $$
+begin
+    insert into characters(character_uuid,owner) values ($1,$2);
+    insert into character_skins(character_uuid, skin) values ($1, $3);
+end;
+$$ language plpgsql;
+
+create or replace procedure saveCharacter(uuid, int, int) as $$
+begin
+    update characters set level = $2, money = $3 where character_uuid = $1;
+end;
+$$ language plpgsql;
+
+
+/*arena*/
+create or replace trigger remove_dead_saves after insert or update on arena_states for each row
+ execute function remove_dead_save();
+
+create or replace function remove_dead_save() returns trigger as $$
+ begin
+    if (select health from arena_states where character_uuid = new.character_uuid) <= 0 then
+        delete from arena_states where health <= 0 and character_uuid = new.character_uuid;
+    end if;
+
+    return null;
+ end
+ $$ language plpgsql;

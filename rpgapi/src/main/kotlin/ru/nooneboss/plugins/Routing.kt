@@ -202,11 +202,11 @@ fun Application.configureRouting() {
 
                 val item = call.receive<Item>()
 
-                println(GsonBuilder().create().toJson(item).toString())
+
                 InventoryController.addItem(item)
                 call.respondText("Item added", status = HttpStatusCode.OK)
                 println("[LOG] User ${user.user_uuid} added item ${item.item_uuid} to inventory.")
-                PostgresLogsController.log(LogMessage(user.user_uuid, item.character_uuid, "Created character", call.request.origin.remoteHost, true))
+                PostgresLogsController.log(LogMessage(user.user_uuid, UUID.fromString(item.character_uuid), "Created character", call.request.origin.remoteHost, true))
             }
 
         }
